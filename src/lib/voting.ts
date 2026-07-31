@@ -52,7 +52,7 @@ export async function castVote(
       score,
       updated_at: new Date().toISOString(),
     },
-    { onConflict: ["juror_id", "candidate_id", "category_id"] },
+    { onConflict: "juror_id,candidate_id,category_id" },
   );
 
   if (error) throw error;

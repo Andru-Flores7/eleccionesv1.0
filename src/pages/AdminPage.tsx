@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
-import { Crown, LogOut, Trash2, Plus, Copy, X, Image as ImageIcon, Film } from "lucide-react";
+import { Crown, LogOut, Trash2, Plus, Copy, X, Image as ImageIcon, Film, Pencil, Eye, ChevronLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { fetchCandidates, fetchCategories, fetchRankings } from "@/lib/public-data";
@@ -132,9 +132,128 @@ function RankingTab() {
   );
 }
 
+// Modal de perfil (solo lectura)
+function CandidateProfileModal({
+  candidate,
+  onClose,
+}: {
+  candidate: Candidate;
+  onClose: () => void;
+}) {
+  const mediaArr: MediaItem[] = Array.isArray(candidate.media)
+    ? (candidate.media as unknown as MediaItem[])
+    : [];
+  const photos = mediaArr.filter((m) => m.type === "photo");
+  const videos = mediaArr.filter((m) => m.type === "video");
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-lg overflow-y-auto rounded-2xl border bg-card shadow-xl max-h-[90vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between border-b px-6 py-4">
+          <div className="flex items-center gap-2">
+            <Eye className="h-4 w-4 text-primary" />
+            <span className="font-display text-lg">Perfil de candidata</span>
+          </div>
+          <button
+            onClick={onClose}
+            className="rounded-lg p-2 text-muted-foreground hover:bg-muted"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        <div className="space-y-5 p-6">
+          {/* Foto principal */}
+          {candidate.photo_url ? (
+            <img
+              src={candidate.photo_url}
+              alt={candidate.name}
+              className="h-48 w-full rounded-xl object-cover"
+            />
+          ) : (
+            <div className="h-48 w-full rounded-xl bg-gradient-jujuy" />
+          )}
+
+          {/* Datos */}
+          <div>
+            <h2 className="font-display text-2xl">{candidate.name}</h2>
+            <p className="text-sm text-muted-foreground">
+              {candidate.number ? `Nº ${candidate.number}` : ""}
+              {candidate.number && candidate.locality ? " · " : ""}
+              {candidate.locality ?? ""}
+            </p>
+          </div>
+
+          {candidate.description && (
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {candidate.description}
+            </p>
+          )}
+
+          {/* Galería */}
+          {photos.length > 0 && (
+            <div>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Fotos ({photos.length})
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {photos.map((p, i) => (
+                  <a key={i} href={p.url} target="_blank" rel="noopener noreferrer">
+                    <img
+                      src={p.url}
+                      alt={`foto ${i + 1}`}
+                      className="h-24 w-full rounded-lg object-cover transition hover:opacity-80"
+                    />
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {videos.length > 0 && (
+            <div>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Videos ({videos.length})
+              </p>
+              <div className="space-y-1">
+                {videos.map((v, i) => (
+                  <a
+                    key={i}
+                    href={v.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 rounded-lg border bg-background px-3 py-2 text-sm hover:bg-muted"
+                  >
+                    <Film className="h-4 w-4 text-muted-foreground" />
+                    <span className="truncate text-muted-foreground">{v.url}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function CandidatesTab() {
   const qc = useQueryClient();
   const candidates = useQuery({ queryKey: ["candidates"], queryFn: fetchCandidates });
+
+  // Estado para el modal de vista de perfil
+  const [viewing, setViewing] = useState<Candidate | null>(null);
+
+  // Estado para el modo de edición
+  const [editingId, setEditingId] = useState<string | null>(null);
+
   const emptyMedia = (): MediaItem[] => [
     { type: "photo", url: "" },
     { type: "photo", url: "" },
@@ -147,6 +266,25 @@ function CandidatesTab() {
     description: "",
     media: emptyMedia(),
   });
+
+  function loadForEdit(c: Candidate) {
+    const mediaArr: MediaItem[] = Array.isArray(c.media) ? (c.media as MediaItem[]) : emptyMedia();
+    setEditingId(c.id);
+    setForm({
+      name: c.name,
+      number: c.number != null ? String(c.number) : "",
+      locality: c.locality ?? "",
+      description: c.description ?? "",
+      media: mediaArr.length > 0 ? mediaArr : emptyMedia(),
+    });
+    // Scroll al panel del formulario en móvil
+    document.getElementById("candidate-form-panel")?.scrollIntoView({ behavior: "smooth" });
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setForm({ name: "", number: "", locality: "", description: "", media: emptyMedia() });
+  }
 
   function updateItem(idx: number, patch: Partial<MediaItem>) {
     setForm((f) => ({
@@ -163,7 +301,7 @@ function CandidatesTab() {
     setForm((f) => ({ ...f, media: f.media.filter((_, i) => i !== idx) }));
   }
 
-  async function add(e: React.FormEvent) {
+  async function save(e: React.FormEvent) {
     e.preventDefault();
     if (!form.name.trim()) return;
     const media = form.media.filter((m) => m.url.trim().length > 0);
@@ -173,23 +311,44 @@ function CandidatesTab() {
       return;
     }
     const firstPhoto = media.find((m) => m.type === "photo")?.url ?? null;
-    const { error } = await supabase.from("candidates").insert({
-      name: form.name.trim(),
-      number: form.number ? Number(form.number) : null,
-      locality: form.locality.trim() || null,
-      description: form.description.trim() || null,
-      photo_url: firstPhoto,
-      media,
-    });
-    if (error) return toast.error(error.message);
-    toast.success(`Candidata agregada (${photoCount} fotos, ${media.length - photoCount} videos)`);
-    setForm({ name: "", number: "", locality: "", description: "", media: emptyMedia() });
+
+    if (editingId) {
+      // Modo edición: actualizar
+      const { error } = await supabase
+        .from("candidates")
+        .update({
+          name: form.name.trim(),
+          number: form.number ? Number(form.number) : null,
+          locality: form.locality.trim() || null,
+          description: form.description.trim() || null,
+          photo_url: firstPhoto,
+          media,
+        })
+        .eq("id", editingId);
+      if (error) return toast.error(error.message);
+      toast.success("Candidata actualizada.");
+      cancelEdit();
+    } else {
+      // Modo agregar: insertar
+      const { error } = await supabase.from("candidates").insert({
+        name: form.name.trim(),
+        number: form.number ? Number(form.number) : null,
+        locality: form.locality.trim() || null,
+        description: form.description.trim() || null,
+        photo_url: firstPhoto,
+        media,
+      });
+      if (error) return toast.error(error.message);
+      toast.success(`Candidata agregada (${photoCount} fotos, ${media.length - photoCount} videos)`);
+      setForm({ name: "", number: "", locality: "", description: "", media: emptyMedia() });
+    }
     qc.invalidateQueries({ queryKey: ["candidates"] });
     qc.invalidateQueries({ queryKey: ["rankings"] });
   }
 
   async function remove(id: string) {
     if (!confirm("¿Eliminar candidata? Se borrarán sus votos.")) return;
+    if (editingId === id) cancelEdit();
     const { error } = await supabase.from("candidates").delete().eq("id", id);
     if (error) return toast.error(error.message);
     qc.invalidateQueries({ queryKey: ["candidates"] });
@@ -197,151 +356,225 @@ function CandidatesTab() {
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_420px]">
-      <div>
-        <h2 className="mb-4 font-display text-2xl">Candidatas</h2>
-        <div className="space-y-2">
-          {candidates.data?.map((c) => {
-            const mediaArr: MediaItem[] = Array.isArray(c.media) ? c.media : [];
-            const photos = mediaArr.filter((m) => m.type === "photo").length;
-            const videos = mediaArr.filter((m) => m.type === "video").length;
-            return (
-              <div key={c.id} className="flex items-center gap-3 rounded-xl border bg-card p-3">
-                {c.photo_url ? (
-                  <img
-                    src={c.photo_url}
-                    alt={c.name}
-                    className="h-12 w-12 rounded-lg object-cover"
-                  />
-                ) : (
-                  <div className="h-12 w-12 rounded-lg bg-gradient-jujuy" />
-                )}
-                <div className="flex-1">
-                  <div className="font-medium">{c.name}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {c.number ? `Nº ${c.number}` : ""}
-                    {c.number && c.locality ? " · " : ""}
-                    {c.locality ?? ""}
+    <>
+      {/* Modal de perfil */}
+      {viewing && (
+        <CandidateProfileModal candidate={viewing} onClose={() => setViewing(null)} />
+      )}
+
+      <div className="grid gap-6 lg:grid-cols-[1fr_420px]">
+        {/* Lista */}
+        <div>
+          <h2 className="mb-4 font-display text-2xl">Candidatas</h2>
+          <div className="space-y-2">
+            {candidates.data?.map((c) => {
+              const mediaArr: MediaItem[] = Array.isArray(c.media)
+                ? (c.media as unknown as MediaItem[])
+                : [];
+              const photos = mediaArr.filter((m) => m.type === "photo").length;
+              const videos = mediaArr.filter((m) => m.type === "video").length;
+              const isEditing = editingId === c.id;
+              return (
+                <div
+                  key={c.id}
+                  className={`flex items-center gap-3 rounded-xl border bg-card p-3 transition ${
+                    isEditing ? "border-primary ring-1 ring-primary/40" : ""
+                  }`}
+                >
+                  {c.photo_url ? (
+                    <img
+                      src={c.photo_url}
+                      alt={c.name}
+                      className="h-12 w-12 rounded-lg object-cover"
+                    />
+                  ) : (
+                    <div className="h-12 w-12 rounded-lg bg-gradient-jujuy" />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium truncate">{c.name}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {c.number ? `Nº ${c.number}` : ""}
+                      {c.number && c.locality ? " · " : ""}
+                      {c.locality ?? ""}
+                    </div>
+                    {c.description ? (
+                      <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1">
+                        {c.description}
+                      </p>
+                    ) : null}
+                    <div className="mt-1 flex gap-2 text-[10px] text-muted-foreground">
+                      <span className="inline-flex items-center gap-1">
+                        <ImageIcon className="h-3 w-3" />
+                        {photos}
+                      </span>
+                      <span className="inline-flex items-center gap-1">
+                        <Film className="h-3 w-3" />
+                        {videos}
+                      </span>
+                    </div>
                   </div>
-                  {c.description ? (
-                    <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
-                      {c.description}
-                    </p>
-                  ) : null}
-                  <div className="mt-1 flex gap-2 text-[10px] text-muted-foreground">
-                    <span className="inline-flex items-center gap-1">
-                      <ImageIcon className="h-3 w-3" />
-                      {photos}
-                    </span>
-                    <span className="inline-flex items-center gap-1">
-                      <Film className="h-3 w-3" />
-                      {videos}
-                    </span>
+                  <div className="flex items-center gap-1 shrink-0">
+                    {/* Ver perfil */}
+                    <button
+                      onClick={() => setViewing(c)}
+                      className="rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+                      title="Ver perfil"
+                    >
+                      <Eye className="h-4 w-4" />
+                    </button>
+                    {/* Editar */}
+                    <button
+                      onClick={() => (isEditing ? cancelEdit() : loadForEdit(c))}
+                      className={`rounded-lg p-2 transition ${
+                        isEditing
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      }`}
+                      title={isEditing ? "Cancelar edición" : "Editar"}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </button>
+                    {/* Eliminar */}
+                    <button
+                      onClick={() => remove(c.id)}
+                      className="rounded-lg p-2 text-destructive hover:bg-destructive/10"
+                      title="Eliminar"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
                   </div>
                 </div>
-                <button
-                  onClick={() => remove(c.id)}
-                  className="rounded-lg p-2 text-destructive hover:bg-destructive/10"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-            );
-          })}
-          {(!candidates.data || candidates.data.length === 0) && (
-            <p className="text-sm text-muted-foreground">Aún no hay candidatas.</p>
+              );
+            })}
+            {(!candidates.data || candidates.data.length === 0) && (
+              <p className="text-sm text-muted-foreground">Aún no hay candidatas.</p>
+            )}
+          </div>
+        </div>
+
+        {/* Formulario agregar / editar */}
+        <form
+          id="candidate-form-panel"
+          onSubmit={save}
+          className="h-fit space-y-3 rounded-2xl border bg-card p-5 shadow-soft"
+        >
+          {/* Header del panel */}
+          <div className="flex items-center justify-between">
+            <h3 className="font-display text-lg">
+              {editingId ? "Editar candidata" : "Agregar candidata"}
+            </h3>
+            {editingId && (
+              <button
+                type="button"
+                onClick={cancelEdit}
+                className="inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-xs text-muted-foreground hover:bg-muted"
+              >
+                <ChevronLeft className="h-3 w-3" /> Cancelar
+              </button>
+            )}
+          </div>
+
+          {editingId && (
+            <p className="rounded-lg bg-primary/10 px-3 py-2 text-xs text-primary">
+              Editando un perfil existente. Los cambios se guardarán al hacer clic en "Guardar cambios".
+            </p>
           )}
-        </div>
+
+          <input
+            placeholder="Nombre completo"
+            required
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
+          />
+          <div className="grid grid-cols-2 gap-2">
+            <input
+              type="number"
+              placeholder="Número"
+              value={form.number}
+              onChange={(e) => setForm({ ...form, number: e.target.value })}
+              className="rounded-lg border bg-background px-3 py-2 text-sm"
+            />
+            <input
+              placeholder="Localidad"
+              value={form.locality}
+              onChange={(e) => setForm({ ...form, locality: e.target.value })}
+              className="rounded-lg border bg-background px-3 py-2 text-sm"
+            />
+          </div>
+          <textarea
+            placeholder="Descripción breve"
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+            className="h-24 w-full rounded-lg border bg-background px-3 py-2 text-sm"
+          />
+          <div className="pt-2">
+            <div className="mb-2 flex items-center justify-between">
+              <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Multimedia (mín. 3)
+              </label>
+              <span className="text-[10px] text-muted-foreground">
+                {form.media.filter((m) => m.url.trim()).length} cargados
+              </span>
+            </div>
+            <div className="space-y-2">
+              {form.media.map((m, idx) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <select
+                    value={m.type}
+                    onChange={(e) => updateItem(idx, { type: e.target.value as "photo" | "video" })}
+                    className="rounded-lg border bg-background px-2 py-2 text-xs"
+                  >
+                    <option value="photo">Foto</option>
+                    <option value="video">Video</option>
+                  </select>
+                  <input
+                    placeholder={m.type === "photo" ? "https://…/foto.jpg" : "YouTube / Vimeo / .mp4"}
+                    value={m.url}
+                    onChange={(e) => updateItem(idx, { url: e.target.value })}
+                    className="flex-1 rounded-lg border bg-background px-3 py-2 text-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeItem(idx)}
+                    aria-label="Quitar"
+                    className="rounded-lg p-2 text-muted-foreground hover:bg-muted"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="mt-2 flex gap-2">
+              <button
+                type="button"
+                onClick={() => addItem("photo")}
+                className="inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-xs hover:bg-muted"
+              >
+                <ImageIcon className="h-3 w-3" /> Foto
+              </button>
+              <button
+                type="button"
+                onClick={() => addItem("video")}
+                className="inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-xs hover:bg-muted"
+              >
+                <Film className="h-3 w-3" /> Video
+              </button>
+            </div>
+          </div>
+
+          {editingId ? (
+            <button className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary py-2.5 text-sm font-semibold text-primary-foreground shadow">
+              <Pencil className="h-4 w-4" /> Guardar cambios
+            </button>
+          ) : (
+            <button className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-gradient-gold py-2.5 text-sm font-semibold text-gold-foreground shadow-gold">
+              <Plus className="h-4 w-4" /> Agregar candidata
+            </button>
+          )}
+        </form>
       </div>
-      <form onSubmit={add} className="h-fit space-y-3 rounded-2xl border bg-card p-5 shadow-soft">
-        <h3 className="font-display text-lg">Agregar candidata</h3>
-        <input
-          placeholder="Nombre completo"
-          required
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
-        />
-        <div className="grid grid-cols-2 gap-2">
-          <input
-            type="number"
-            placeholder="Número"
-            value={form.number}
-            onChange={(e) => setForm({ ...form, number: e.target.value })}
-            className="rounded-lg border bg-background px-3 py-2 text-sm"
-          />
-          <input
-            placeholder="Localidad"
-            value={form.locality}
-            onChange={(e) => setForm({ ...form, locality: e.target.value })}
-            className="rounded-lg border bg-background px-3 py-2 text-sm"
-          />
-        </div>
-        <textarea
-          placeholder="Descripción breve"
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-          className="h-24 w-full rounded-lg border bg-background px-3 py-2 text-sm"
-        />
-        <div className="pt-2">
-          <div className="mb-2 flex items-center justify-between">
-            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Multimedia (mín. 3)
-            </label>
-            <span className="text-[10px] text-muted-foreground">
-              {form.media.filter((m) => m.url.trim()).length} cargados
-            </span>
-          </div>
-          <div className="space-y-2">
-            {form.media.map((m, idx) => (
-              <div key={idx} className="flex items-center gap-2">
-                <select
-                  value={m.type}
-                  onChange={(e) => updateItem(idx, { type: e.target.value as "photo" | "video" })}
-                  className="rounded-lg border bg-background px-2 py-2 text-xs"
-                >
-                  <option value="photo">Foto</option>
-                  <option value="video">Video</option>
-                </select>
-                <input
-                  placeholder={m.type === "photo" ? "https://…/foto.jpg" : "YouTube / Vimeo / .mp4"}
-                  value={m.url}
-                  onChange={(e) => updateItem(idx, { url: e.target.value })}
-                  className="flex-1 rounded-lg border bg-background px-3 py-2 text-sm"
-                />
-                <button
-                  type="button"
-                  onClick={() => removeItem(idx)}
-                  aria-label="Quitar"
-                  className="rounded-lg p-2 text-muted-foreground hover:bg-muted"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-            ))}
-          </div>
-          <div className="mt-2 flex gap-2">
-            <button
-              type="button"
-              onClick={() => addItem("photo")}
-              className="inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-xs hover:bg-muted"
-            >
-              <ImageIcon className="h-3 w-3" /> Foto
-            </button>
-            <button
-              type="button"
-              onClick={() => addItem("video")}
-              className="inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-xs hover:bg-muted"
-            >
-              <Film className="h-3 w-3" /> Video
-            </button>
-          </div>
-        </div>
-        <button className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-gradient-gold py-2.5 text-sm font-semibold text-gold-foreground shadow-gold">
-          <Plus className="h-4 w-4" /> Agregar candidata
-        </button>
-      </form>
-    </div>
+    </>
   );
 }
 
