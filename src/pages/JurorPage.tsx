@@ -113,15 +113,15 @@ function VotingPanel({
   const categories = useQuery<Category[]>({ queryKey: ["categories"], queryFn: fetchCategories });
 
   const categoryNameMap: Record<string, string> = {
-    'Desenvoltura': 'Desenvoltura',
-    'Simpatía': 'Simpatía',
-    'Elegancia': 'Elegancia',
-    'Personalidad': 'Personalidad',
-    'Simpatía y carisma': 'Simpatía',
-    'Elegancia y postura': 'Elegancia',
-    'Desenvolvimiento': 'Desenvoltura',
-    'Oratoria y Entrevista': 'Personalidad',
-    'Presencia Escénica': 'Personalidad',
+    Desenvoltura: "Desenvoltura",
+    Simpatía: "Simpatía",
+    Elegancia: "Elegancia",
+    Personalidad: "Personalidad",
+    "Simpatía y carisma": "Simpatía",
+    "Elegancia y postura": "Elegancia",
+    Desenvolvimiento: "Desenvoltura",
+    "Oratoria y Entrevista": "Personalidad",
+    "Presencia Escénica": "Personalidad",
   };
   const myVotes = useQuery<VoteRow[]>({
     queryKey: ["juror-votes", code],
@@ -171,31 +171,11 @@ function VotingPanel({
       </header>
 
       <main className="mx-auto max-w-6xl px-4 py-8 space-y-8">
-        <div>
-          <h1 className="font-display text-2xl sm:text-3xl">Tu voto</h1>
-          <p className="text-sm text-muted-foreground">
-            Puntuá cada candidata del 1 al 10 en cada categoría. Se guarda automáticamente.
-          </p>
-          <div className="mt-6 rounded-3xl border border-gray-200/70 bg-muted p-4 text-sm text-foreground/90 shadow-sm sm:text-base">
-            <p className="font-semibold">¿Qué evalúa el jurado?</p>
-            <p className="mt-2">
-              El jurado puntúa a las candidatas según una entrevista integral o coloquio y sus
-              pasadas en los desfiles. Evalúan principalmente:
-            </p>
-            <ul className="mt-2 ml-5 list-disc space-y-1 text-muted-foreground">
-              <li>Desenvoltura</li>
-              <li>Simpatía</li>
-              <li>Elegancia</li>
-              <li>Personalidad</li>
-            </ul>
-          </div>
-        </div>
-
         {candidates.data?.map((c) => (
           <article key={c.id} className="overflow-hidden rounded-2xl border bg-card shadow-soft">
-            <div className="grid gap-4 sm:grid-cols-[300px_1fr]">
+            <div className="grid gap-4 sm:grid-cols-[300px_1fr] sm:items-center">
               <div className="mx-auto h-[300px] w-full max-w-[300px] sm:mx-0 sm:h-[300px] sm:w-[300px]">
-                <div className="h-full w-full overflow-hidden rounded-2xl bg-black">
+                <div className="h-full w-full overflow-hidden rounded-2xl bg-black ">
                   <MediaGallery
                     media={(c.media as MediaItem[]) ?? []}
                     fallbackPhoto={c.photo_url}

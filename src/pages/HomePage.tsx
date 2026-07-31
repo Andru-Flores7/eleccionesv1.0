@@ -74,10 +74,10 @@ export default function HomePage() {
         <div className="relative mx-auto max-w-7xl px-6 pb-20 pt-40 sm:pt-48 sm:pb-28">
           <div className="max-w-3xl text-white">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-gold/10 backdrop-blur px-3 py-1 text-xs font-medium ring-1 ring-gold/30 text-gold">
-              <Sparkles className="h-3.5 w-3.5" /> Edición 2026 · Jujuy, Argentina
+              Edición 2026 · Jujuy, Argentina
             </div>
             <h1 className="font-display text-5xl font-bold leading-tight sm:text-7xl">
-              Elección de la <span className="text-gradient-gold">Reina</span> de Jujuy
+              Elección  <span className="text-gradient-gold">Reina</span> 
             </h1>
             <p className="mt-5 max-w-xl text-lg text-white/75">
               Conocé a las candidatas, seguí las puntuaciones del jurado y viví la elección en
