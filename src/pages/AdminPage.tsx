@@ -2,7 +2,22 @@ import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
-import { Crown, LogOut, Trash2, Plus, Copy, X, Image as ImageIcon, Film, Pencil, Eye, ChevronLeft } from "lucide-react";
+import {
+  Crown,
+  LogOut,
+  Trash2,
+  Plus,
+  Copy,
+  X,
+  Image as ImageIcon,
+  Film,
+  Pencil,
+  Eye,
+  ChevronLeft,
+  Download,
+} from "lucide-react";
+import { jsPDF } from "jspdf";
+import appHero from "@/assets/jujuy-hero.jpg";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { fetchCandidates, fetchCategories, fetchRankings } from "@/lib/public-data";
@@ -20,10 +35,33 @@ export default function AdminPage() {
   usePageTitle("Admin — Reina de Jujuy");
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("ranking");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function checkAuth() {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) {
+        navigate("/auth", { replace: true });
+      }
+      setLoading(false);
+    }
+    checkAuth();
+  }, [navigate]);
 
   async function logout() {
     await supabase.auth.signOut();
     navigate("/auth");
+  }
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="mb-4 h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />
+          <p className="text-sm text-muted-foreground">Cargando...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -161,10 +199,7 @@ function CandidateProfileModal({
             <Eye className="h-4 w-4 text-primary" />
             <span className="font-display text-lg">Perfil de candidata</span>
           </div>
-          <button
-            onClick={onClose}
-            className="rounded-lg p-2 text-muted-foreground hover:bg-muted"
-          >
+          <button onClick={onClose} className="rounded-lg p-2 text-muted-foreground hover:bg-muted">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -192,9 +227,7 @@ function CandidateProfileModal({
           </div>
 
           {candidate.description && (
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              {candidate.description}
-            </p>
+            <p className="text-sm leading-relaxed text-muted-foreground">{candidate.description}</p>
           )}
 
           {/* Galería */}
@@ -339,7 +372,9 @@ function CandidatesTab() {
         media,
       });
       if (error) return toast.error(error.message);
-      toast.success(`Candidata agregada (${photoCount} fotos, ${media.length - photoCount} videos)`);
+      toast.success(
+        `Candidata agregada (${photoCount} fotos, ${media.length - photoCount} videos)`,
+      );
       setForm({ name: "", number: "", locality: "", description: "", media: emptyMedia() });
     }
     qc.invalidateQueries({ queryKey: ["candidates"] });
@@ -358,9 +393,7 @@ function CandidatesTab() {
   return (
     <>
       {/* Modal de perfil */}
-      {viewing && (
-        <CandidateProfileModal candidate={viewing} onClose={() => setViewing(null)} />
-      )}
+      {viewing && <CandidateProfileModal candidate={viewing} onClose={() => setViewing(null)} />}
 
       <div className="grid gap-6 lg:grid-cols-[1fr_420px]">
         {/* Lista */}
@@ -476,7 +509,8 @@ function CandidatesTab() {
 
           {editingId && (
             <p className="rounded-lg bg-primary/10 px-3 py-2 text-xs text-primary">
-              Editando un perfil existente. Los cambios se guardarán al hacer clic en "Guardar cambios".
+              Editando un perfil existente. Los cambios se guardarán al hacer clic en "Guardar
+              cambios".
             </p>
           )}
 
@@ -529,7 +563,9 @@ function CandidatesTab() {
                     <option value="video">Video</option>
                   </select>
                   <input
-                    placeholder={m.type === "photo" ? "https://…/foto.jpg" : "YouTube / Vimeo / .mp4"}
+                    placeholder={
+                      m.type === "photo" ? "https://…/foto.jpg" : "YouTube / Vimeo / .mp4"
+                    }
                     value={m.url}
                     onChange={(e) => updateItem(idx, { url: e.target.value })}
                     className="flex-1 rounded-lg border bg-background px-3 py-2 text-sm"
@@ -717,6 +753,147 @@ function LiveVotesTab() {
   const emitidos = votes.data?.length ?? 0;
   const pct = totalEsperado ? Math.round((emitidos / totalEsperado) * 100) : 0;
 
+  const downloadVotesPdf = () => {
+    const doc = new jsPDF({ unit: "mm", format: "a4" });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 15;
+    const goldColor = "#D4AF37";
+    const darkColor = "#1C232B";
+    const now = new Date();
+    const dateStr = now.toLocaleDateString("es-AR");
+    const timeStr = now.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" });
+
+    doc.setFillColor(28, 35, 43);
+    doc.rect(0, 0, pageWidth, 50, "F");
+
+    doc.setTextColor(212, 175, 55);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(24);
+    doc.text("Comprobante Oficial de Votación", margin + 15, 20);
+
+    doc.setFontSize(11);
+    doc.setTextColor(212, 175, 55);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Elección Reina de Jujuy · Emitido: ${dateStr}, ${timeStr}`, margin + 15, 30);
+
+    doc.setFontSize(9);
+    doc.setTextColor(150, 150, 150);
+    doc.text("Comprobante oficial de votación", margin + 15, 40);
+
+    let y = 60;
+
+    doc.setTextColor(28, 35, 43);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14);
+    doc.text("Ranking final", margin, y);
+    y += 8;
+
+    doc.setDrawColor(212, 175, 55);
+    doc.setLineWidth(2);
+    doc.line(margin, y, pageWidth - margin, y);
+    y += 8;
+
+    const colWidths = [15, 50, 12, 25, 25, 20];
+    const colHeaders = ["#", "Candidata", "Nº", "Total", "Promedio", "Votos"];
+    const headerHeight = 10;
+
+    doc.setFillColor(212, 175, 55);
+    doc.rect(margin, y - 6, pageWidth - margin * 2, headerHeight, "F");
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+
+    let xPos = margin + 2;
+    colHeaders.forEach((header, i) => {
+      doc.text(header, xPos, y + 2);
+      xPos += colWidths[i];
+    });
+
+    y += 10;
+
+    const rankedCands = cands.map((c, idx) => {
+      const scores = jur.flatMap((j) =>
+        cats
+          .map((cat) => map.get(`${j.id}:${c.id}:${cat.id}`))
+          .filter((s): s is number => typeof s === "number"),
+      );
+      const total = scores.reduce((a, b) => a + b, 0);
+      const avg = scores.length > 0 ? (total / scores.length).toFixed(2) : "0.00";
+      const numVotos = scores.length;
+      return { ...c, total, avg, numVotos, rank: idx + 1 };
+    });
+
+    rankedCands.sort((a, b) => b.total - a.total);
+
+    doc.setTextColor(28, 35, 43);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+
+    rankedCands.forEach((cand, idx) => {
+      const rowHeight = 8;
+      doc.setDrawColor(200, 200, 200);
+      doc.setLineWidth(0.5);
+      doc.line(margin, y + rowHeight - 1, pageWidth - margin, y + rowHeight - 1);
+
+      xPos = margin + 2;
+      doc.text(String(idx + 1), xPos, y + 4);
+      xPos += colWidths[0];
+
+      doc.text(cand.name.substring(0, 20), xPos, y + 4);
+      xPos += colWidths[1];
+
+      doc.text(cand.number ? String(cand.number) : "—", xPos, y + 4);
+      xPos += colWidths[2];
+
+      doc.setFont("helvetica", "bold");
+      doc.text(String(cand.total), xPos, y + 4);
+      xPos += colWidths[3];
+
+      doc.setFont("helvetica", "normal");
+      doc.text(String(cand.avg), xPos, y + 4);
+      xPos += colWidths[4];
+
+      doc.text(String(cand.numVotos), xPos, y + 4);
+
+      y += rowHeight;
+    });
+
+    y = pageHeight - 70;
+
+    const sealSize = 35;
+    const sealX = pageWidth - margin - sealSize / 2;
+    const sealY = y + 10;
+
+    doc.setDrawColor(212, 175, 55);
+    doc.setLineWidth(2);
+    doc.circle(sealX, sealY, sealSize / 2, "S");
+
+    doc.setTextColor(212, 175, 55);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.text("RESULTADO", sealX, sealY - 5, { align: "center" });
+    doc.text("FINAL", sealX, sealY, { align: "center" });
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7);
+    doc.text(dateStr, sealX, sealY + 6, { align: "center" });
+    doc.text(timeStr + " p.m. hs", sealX, sealY + 11, { align: "center" });
+
+    doc.setTextColor(120, 120, 120);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.text(
+      `Elección Reina de Jujuy · Resultado final ${dateStr}, ${timeStr}`,
+      margin,
+      pageHeight - 8,
+    );
+    doc.text("Página 1 de 1", pageWidth - margin - 20, pageHeight - 8);
+
+    doc.save(`comprobante-votos-${dateStr.replace(/\//g, "-")}.pdf`);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
@@ -726,12 +903,20 @@ function LiveVotesTab() {
             Puntajes de cada jurado, actualizados en tiempo real.
           </p>
         </div>
-        <div className="rounded-xl border bg-card px-4 py-2 text-sm">
-          <span className="text-muted-foreground">Progreso: </span>
-          <span className="font-display text-gold">
-            {emitidos}/{totalEsperado}
-          </span>
-          <span className="text-muted-foreground"> ({pct}%)</span>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={downloadVotesPdf}
+            className="inline-flex items-center gap-1.5 rounded-lg border bg-card px-3 py-2 text-sm font-medium hover:bg-muted"
+          >
+            <Download className="h-4 w-4" /> Descargar PDF
+          </button>
+          <div className="rounded-xl border bg-card px-4 py-2 text-sm">
+            <span className="text-muted-foreground">Progreso: </span>
+            <span className="font-display text-gold">
+              {emitidos}/{totalEsperado}
+            </span>
+            <span className="text-muted-foreground"> ({pct}%)</span>
+          </div>
         </div>
       </div>
       {jur.length === 0 || cands.length === 0 ? (

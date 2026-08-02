@@ -77,7 +77,7 @@ export default function HomePage() {
               Edición 2026 · Jujuy, Argentina
             </div>
             <h1 className="font-display text-5xl font-bold leading-tight sm:text-7xl">
-              Elección  <span className="text-gradient-gold">Reina</span> 
+              Elección <span className="text-gradient-gold">Reina</span>
             </h1>
             <p className="mt-5 max-w-xl text-lg text-white/75">
               Conocé a las candidatas, seguí las puntuaciones del jurado y viví la elección en
