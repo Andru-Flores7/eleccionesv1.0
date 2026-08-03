@@ -45,7 +45,7 @@ export default function HomePage() {
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
           <div className="flex items-center gap-2 text-white">
             <Crown className="h-6 w-6 text-gold" />
-            <span className="font-display text-lg font-bold">Reina de Jujuy</span>
+            <span className="font-display text-lg font-bold">Jujuy</span>
           </div>
           <div className="flex items-center gap-2">
             <Link
