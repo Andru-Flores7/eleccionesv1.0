@@ -91,13 +91,13 @@ export default function AuthPage() {
             {loading ? "..." : mode === "signup" ? "Crear cuenta" : "Ingresar"}
           </button>
         </form>
-        <button
+        {/*  <button
           type="button"
           onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
           className="mt-4 w-full text-sm text-muted-foreground hover:text-foreground"
         >
           {mode === "signin" ? "¿No tenés cuenta? Registrate" : "Ya tengo cuenta"}
-        </button>
+        </button>*/}
       </div>
     </div>
   );
