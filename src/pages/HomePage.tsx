@@ -7,6 +7,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { fetchCandidates, fetchRankings } from "@/lib/public-data";
 import { MediaGallery, type MediaItem } from "@/components/media-gallery";
 import heroImg from "@/assets/jujuy-hero.jpg";
+import geekStoreLogo from "@/assets/GEEK STORE LOGO-bB5kTN19.png";
 import { usePageTitle } from "@/hooks/use-page-title";
 
 type Candidate = Database["public"]["Tables"]["candidates"]["Row"];
@@ -45,7 +46,7 @@ export default function HomePage() {
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
           <div className="flex items-center gap-2 text-white">
             <Crown className="h-6 w-6 text-gold" />
-            <span className="font-display text-lg font-bold">Jujuy</span>
+            {/* <span className="font-display text-lg font-bold">Jujuy</span> */}
           </div>
           <div className="flex items-center gap-2">
             <Link
@@ -77,7 +78,9 @@ export default function HomePage() {
               Edición 2026 · Jujuy, Argentina
             </div>
             <h1 className="font-display text-5xl font-bold leading-tight sm:text-7xl">
-              Elección <span className="text-gradient-gold">Reina</span>
+              Elección <span className="text-gradient-gold">Reina </span>
+              Colegio Polimodal N°8
+              <span className="text-gradient-gold"> "Juana Azurduy"</span>
             </h1>
             <p className="mt-5 max-w-xl text-lg text-white/75">
               Conocé a las candidatas, seguí las puntuaciones del jurado y viví la elección en
@@ -197,8 +200,24 @@ export default function HomePage() {
         )}
       </section>
 
-      <footer className="border-t bg-muted/40 py-8 text-center text-sm text-muted-foreground">
-        <p>Elección Reina de Jujuy · Sistema oficial de votación</p>
+      <footer className="border-t bg-muted/40 py-8 text-sm text-muted-foreground">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-center gap-4 px-6 text-center">
+          <div className="flex items-center gap-3 rounded-full border border-border/60 bg-background/80 px-4 py-3 shadow-sm">
+            <img
+              src={geekStoreLogo}
+              alt="Geek Store logo"
+              className="h-14 w-auto rounded-md object-contain"
+            />
+            <span className="font-semibold text-foreground">Geek Store</span>
+          </div>
+          <div className="flex flex-col items-center gap-1 sm:flex-row sm:gap-2">
+            <span className="font-medium text-foreground">Soporte técnico:</span>
+            <a href="mailto:geekstoretech@gmail.com" className="text-primary hover:underline">
+              geekstoretech@gmail.com
+            </a>
+          </div>
+          <span className="font-medium text-foreground">© 2026 GEEK STORE "Creative Tech Solutions"</span>
+        </div>
       </footer>
     </div>
   );
