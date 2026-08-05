@@ -18,6 +18,7 @@ export type Database = {
           name: string;
           number: number | null;
           photo_url: string | null;
+          promedio: number | null;
         };
         Insert: {
           created_at?: string;
@@ -28,6 +29,7 @@ export type Database = {
           name: string;
           number?: number | null;
           photo_url?: string | null;
+          promedio?: number | null;
         };
         Update: {
           created_at?: string;
@@ -38,6 +40,7 @@ export type Database = {
           name?: string;
           number?: number | null;
           photo_url?: string | null;
+          promedio?: number | null;
         };
         Relationships: [];
       };

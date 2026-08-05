@@ -24,6 +24,7 @@ import { fetchCandidates, fetchCategories, fetchRankings } from "@/lib/public-da
 import type { MediaItem } from "@/components/media-gallery";
 import { usePageTitle } from "@/hooks/use-page-title";
 
+type Contest = "reina" | "chico10";
 type Tab = "ranking" | "votos" | "candidatas" | "jurados";
 type Candidate = Database["public"]["Tables"]["candidates"]["Row"];
 type Category = Database["public"]["Tables"]["categories"]["Row"];
@@ -35,6 +36,7 @@ export default function AdminPage() {
   usePageTitle("Admin — Reina de Jujuy");
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("ranking");
+  const [contest, setContest] = useState<Contest>("reina");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -103,20 +105,41 @@ export default function AdminPage() {
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-4 py-8">
-        {tab === "ranking" && <RankingTab />}
-        {tab === "votos" && <LiveVotesTab />}
-        {tab === "candidatas" && <CandidatesTab />}
+        {(tab === "ranking" || tab === "votos" || tab === "candidatas") && (
+          <div className="mb-6 flex flex-wrap items-center gap-3">
+            {([
+              { value: "reina", label: "Reina" },
+              { value: "chico10", label: "Chico 10" },
+            ] as const).map((item) => (
+              <button
+                key={item.value}
+                type="button"
+                onClick={() => setContest(item.value)}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                  contest === item.value
+                    ? "bg-primary text-primary-foreground"
+                    : "border border-border bg-card text-muted-foreground hover:bg-muted"
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        )}
+        {tab === "ranking" && <RankingTab contest={contest} />}
+        {tab === "votos" && <LiveVotesTab contest={contest} />}
+        {tab === "candidatas" && <CandidatesTab contest={contest} />}
         {tab === "jurados" && <JurorsTab />}
       </main>
     </div>
   );
 }
 
-function RankingTab() {
+function RankingTab({ contest }: { contest: Contest }) {
   const qc = useQueryClient();
   const rankings = useQuery<RankingRow[]>({
-    queryKey: ["rankings"],
-    queryFn: fetchRankings,
+    queryKey: ["rankings", contest],
+    queryFn: () => fetchRankings(contest),
     refetchInterval: 3000,
   });
 
@@ -132,8 +155,19 @@ function RankingTab() {
     };
   }, [qc]);
 
+  const visibleRankings = rankings.data?.filter((r) => {
+    const rowContest = (r as any).contest ?? "reina";
+    return rowContest === contest;
+  });
+
   return (
     <div>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div className="text-xs text-muted-foreground">Concurso</div>
+          <div className="font-display text-2xl capitalize">{contest === "reina" ? "Reina" : "Chico 10"}</div>
+        </div>
+      </div>
       <h2 className="mb-4 font-display text-2xl">Ranking en vivo</h2>
       <div className="overflow-hidden rounded-2xl border bg-card">
         <table className="w-full text-sm">
@@ -147,7 +181,7 @@ function RankingTab() {
             </tr>
           </thead>
           <tbody>
-            {rankings.data?.map((r, i) => (
+            {visibleRankings?.map((r, i) => (
               <tr key={r.candidate_id} className="border-t">
                 <td className="px-4 py-3">
                   {i === 0 ? <Crown className="h-4 w-4 text-gold" /> : i + 1}
@@ -347,9 +381,12 @@ function CandidateProfileModal({
   );
 }
 
-function CandidatesTab() {
+function CandidatesTab({ contest }: { contest: Contest }) {
   const qc = useQueryClient();
-  const candidates = useQuery({ queryKey: ["candidates"], queryFn: fetchCandidates });
+  const candidates = useQuery({
+    queryKey: ["candidates", contest],
+    queryFn: () => fetchCandidates(contest),
+  });
 
   // Estado para el modal de vista de perfil
   const [viewing, setViewing] = useState<Candidate | null>(null);
@@ -378,6 +415,8 @@ function CandidatesTab() {
     libro_preferido: "",
     meta_vida: "",
     mensaje_juventud: "",
+    promedio: "",
+    contest,
     media: emptyMedia(),
   });
 
@@ -400,6 +439,8 @@ function CandidatesTab() {
       libro_preferido: (c as any).libro_preferido ?? "",
       meta_vida: (c as any).meta_vida ?? "",
       mensaje_juventud: (c as any).mensaje_juventud ?? "",
+      promedio: (c as any).promedio != null ? String((c as any).promedio) : "",
+      contest: (c as any).contest ?? contest,
       media: mediaArr.length > 0 ? mediaArr : emptyMedia(),
     });
     // Scroll al panel del formulario en móvil
@@ -424,6 +465,8 @@ function CandidatesTab() {
       libro_preferido: "",
       meta_vida: "",
       mensaje_juventud: "",
+      promedio: "",
+      contest,
       media: emptyMedia(),
     });
   }
@@ -474,6 +517,8 @@ function CandidatesTab() {
           libro_preferido: form.libro_preferido.trim() || null,
           meta_vida: form.meta_vida.trim() || null,
           mensaje_juventud: form.mensaje_juventud.trim() || null,
+          promedio: form.promedio ? Number(form.promedio) : null,
+          contest: form.contest,
           photo_url: firstPhoto,
           media,
         })
@@ -499,6 +544,8 @@ function CandidatesTab() {
         libro_preferido: form.libro_preferido.trim() || null,
         meta_vida: form.meta_vida.trim() || null,
         mensaje_juventud: form.mensaje_juventud.trim() || null,
+        promedio: form.promedio ? Number(form.promedio) : null,
+        contest: form.contest,
         photo_url: firstPhoto,
         media,
       });
@@ -522,6 +569,8 @@ function CandidatesTab() {
         libro_preferido: "",
         meta_vida: "",
         mensaje_juventud: "",
+        promedio: "",
+        contest,
         media: emptyMedia(),
       });
     }
@@ -538,6 +587,17 @@ function CandidatesTab() {
     qc.invalidateQueries({ queryKey: ["rankings"] });
   }
 
+  const visibleCandidates = candidates.data?.filter((c) => {
+    const candidateContest = (c as any).contest ?? "reina";
+    return candidateContest === contest;
+  });
+
+  useEffect(() => {
+    if (!editingId) {
+      setForm((current) => ({ ...current, contest }));
+    }
+  }, [contest, editingId]);
+
   return (
     <>
       {/* Modal de perfil */}
@@ -548,7 +608,7 @@ function CandidatesTab() {
         <div>
           <h2 className="mb-4 font-display text-2xl">Candidatas</h2>
           <div className="space-y-2">
-            {candidates.data?.map((c) => {
+            {visibleCandidates?.map((c) => {
               const mediaArr: MediaItem[] = Array.isArray(c.media)
                 ? (c.media as unknown as MediaItem[])
                 : [];
@@ -627,8 +687,10 @@ function CandidatesTab() {
                 </div>
               );
             })}
-            {(!candidates.data || candidates.data.length === 0) && (
-              <p className="text-sm text-muted-foreground">Aún no hay candidatas.</p>
+            {(!visibleCandidates || visibleCandidates.length === 0) && (
+              <p className="text-sm text-muted-foreground">
+                Aún no hay candidatos cargados para este concurso.
+              </p>
             )}
           </div>
         </div>
@@ -684,7 +746,7 @@ function CandidatesTab() {
               className="rounded-lg border bg-background px-3 py-2 text-sm"
             />
           </div>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-2">
             <input
               type="number"
               placeholder="EDAD"
@@ -696,6 +758,14 @@ function CandidatesTab() {
               placeholder="SIGNO"
               value={form.signo}
               onChange={(e) => setForm({ ...form, signo: e.target.value })}
+              className="rounded-lg border bg-background px-3 py-2 text-sm"
+            />
+            <input
+              type="number"
+              step="0.01"
+              placeholder="PROMEDIO"
+              value={form.promedio}
+              onChange={(e) => setForm({ ...form, promedio: e.target.value })}
               className="rounded-lg border bg-background px-3 py-2 text-sm"
             />
           </div>
@@ -915,9 +985,12 @@ function JurorsTab() {
   );
 }
 
-function LiveVotesTab() {
+function LiveVotesTab({ contest }: { contest: Contest }) {
   const qc = useQueryClient();
-  const candidates = useQuery({ queryKey: ["candidates"], queryFn: fetchCandidates });
+  const candidates = useQuery({
+    queryKey: ["candidates", contest],
+    queryFn: () => fetchCandidates(contest),
+  });
   const categories = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
   const jurors = useQuery({
     queryKey: ["jurors"],
@@ -964,15 +1037,20 @@ function LiveVotesTab() {
     ...cat,
     displayName: fixedLabels[i] ?? cat.name,
   }));
-  const cands = candidates.data ?? [];
+  const cands = (candidates.data ?? []).filter((c) => {
+    const candidateContest = (c as any).contest ?? "reina";
+    return candidateContest === contest;
+  });
   const jur = jurors.data ?? [];
+  const candidateIds = new Set(cands.map((c) => c.id));
+  const contestVotes = (votes.data ?? []).filter((v) => candidateIds.has(v.candidate_id));
   const map = new Map<string, number>();
-  (votes.data ?? []).forEach((v) =>
+  contestVotes.forEach((v) =>
     map.set(`${v.juror_id}:${v.candidate_id}:${v.category_id}`, v.score),
   );
 
   const totalEsperado = jur.length * cands.length * cats.length;
-  const emitidos = votes.data?.length ?? 0;
+  const emitidos = contestVotes.length;
   const pct = totalEsperado ? Math.round((emitidos / totalEsperado) * 100) : 0;
 
   const downloadVotesPdf = () => {
@@ -994,10 +1072,12 @@ function LiveVotesTab() {
     doc.setFontSize(24);
     doc.text("Comprobante Oficial de Votación", margin + 15, 20);
 
+    const contestLabel = contest === "reina" ? "Reina" : "Chico 10";
+
     doc.setFontSize(11);
     doc.setTextColor(212, 175, 55);
     doc.setFont("helvetica", "normal");
-    doc.text(`Elección Reina de Jujuy · Emitido: ${dateStr}, ${timeStr}`, margin + 15, 30);
+    doc.text(`Elección ${contestLabel} Colegio Polimodal N°8  · Emitido: ${dateStr}, ${timeStr}`, margin + 15, 30);
 
     doc.setFontSize(9);
     doc.setTextColor(150, 150, 150);
@@ -1017,7 +1097,7 @@ function LiveVotesTab() {
     y += 8;
 
     const colWidths = [15, 50, 12, 25, 25, 20];
-    const colHeaders = ["#", "Candidata", "Nº", "Total", "Promedio", "Votos"];
+    const colHeaders = ["#", "Candidat@", "Nº", "Total", "Promedio", "Votos"];
     const headerHeight = 10;
 
     doc.setFillColor(212, 175, 55);
@@ -1107,7 +1187,7 @@ function LiveVotesTab() {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.text(
-      `Elección Reina de Jujuy · Resultado final ${dateStr}, ${timeStr}`,
+      `Elección ${contestLabel} de Jujuy · Resultado final ${dateStr}, ${timeStr}`,
       margin,
       pageHeight - 8,
     );
@@ -1120,7 +1200,10 @@ function LiveVotesTab() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="font-display text-2xl">Votos en vivo</h2>
+          <div className="text-xs text-muted-foreground">Concurso</div>
+          <div className="font-display text-2xl capitalize">
+            {contest === "reina" ? "Reina" : "Chico 10"}
+          </div>
           <p className="text-sm text-muted-foreground">
             Puntajes de cada jurado, actualizados en tiempo real.
           </p>

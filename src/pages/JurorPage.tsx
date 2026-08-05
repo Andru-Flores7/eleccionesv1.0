@@ -109,7 +109,11 @@ function VotingPanel({
   onLogout: () => void;
 }) {
   const qc = useQueryClient();
-  const candidates = useQuery<Candidate[]>({ queryKey: ["candidates"], queryFn: fetchCandidates });
+  const [contest, setContest] = useState<"reina" | "chico10">("reina");
+  const candidates = useQuery<Candidate[]>({
+    queryKey: ["candidates", contest],
+    queryFn: () => fetchCandidates(contest),
+  });
   const categories = useQuery<Category[]>({ queryKey: ["categories"], queryFn: fetchCategories });
 
   const fixedLabels = [
@@ -168,6 +172,31 @@ function VotingPanel({
       </header>
 
       <main className="mx-auto max-w-6xl px-4 py-8 space-y-8">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <div className="text-xs text-muted-foreground">Concurso</div>
+            <div className="font-display text-2xl capitalize">{contest === "reina" ? "Reina" : "Chico 10"}</div>
+          </div>
+          <div className="flex gap-2">
+            {([
+              { value: "reina", label: "Reina" },
+              { value: "chico10", label: "Chico 10" },
+            ] as const).map((item) => (
+              <button
+                key={item.value}
+                type="button"
+                onClick={() => setContest(item.value)}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                  contest === item.value
+                    ? "bg-primary text-primary-foreground"
+                    : "border border-border bg-card text-muted-foreground hover:bg-muted"
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </div>
         {candidates.data?.map((c) => (
           <article key={c.id} className="overflow-hidden rounded-2xl border bg-card shadow-soft">
             <div className="grid gap-4 sm:grid-cols-[300px_1fr] sm:items-center">

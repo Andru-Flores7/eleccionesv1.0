@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Crown, Sparkles, Trophy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
@@ -16,10 +16,14 @@ type RankingRow = Database["public"]["Views"]["candidate_rankings"]["Row"];
 export default function HomePage() {
   usePageTitle("Elección Reina de Jujuy — Votación oficial");
   const qc = useQueryClient();
-  const candidates = useQuery<Candidate[]>({ queryKey: ["candidates"], queryFn: fetchCandidates });
+  const [contest, setContest] = useState<"reina" | "chico10">("reina");
+  const candidates = useQuery<Candidate[]>({
+    queryKey: ["candidates", contest],
+    queryFn: () => fetchCandidates(contest),
+  });
   const rankings = useQuery<RankingRow[]>({
-    queryKey: ["rankings"],
-    queryFn: fetchRankings,
+    queryKey: ["rankings", contest],
+    queryFn: () => fetchRankings(contest),
     refetchInterval: 5000,
   });
 
@@ -92,14 +96,32 @@ export default function HomePage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-6 py-16">
-        <div className="mb-8 flex items-end justify-between">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-2 text-sm font-medium text-primary">
               <Trophy className="h-4 w-4" /> En vivo
             </div>
             <h2 className="mt-1 font-display text-3xl sm:text-4xl">Ranking del jurado</h2>
           </div>
-          <span className="text-xs text-muted-foreground">Actualiza automáticamente</span>
+          <div className="flex gap-2">
+            {([
+              { value: "reina", label: "Reina" },
+              { value: "chico10", label: "Chico 10" },
+            ] as const).map((item) => (
+              <button
+                key={item.value}
+                type="button"
+                onClick={() => setContest(item.value)}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                  contest === item.value
+                    ? "bg-primary text-primary-foreground"
+                    : "border border-border bg-card text-muted-foreground hover:bg-muted"
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {rankings.isLoading ? (
