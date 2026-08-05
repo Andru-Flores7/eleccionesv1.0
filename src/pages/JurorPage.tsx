@@ -112,17 +112,14 @@ function VotingPanel({
   const candidates = useQuery<Candidate[]>({ queryKey: ["candidates"], queryFn: fetchCandidates });
   const categories = useQuery<Category[]>({ queryKey: ["categories"], queryFn: fetchCategories });
 
-  const categoryNameMap: Record<string, string> = {
-    Desenvoltura: "Desenvoltura",
-    Simpatía: "Simpatía",
-    Elegancia: "Elegancia",
-    Personalidad: "Personalidad",
-    "Simpatía y carisma": "Simpatía",
-    "Elegancia y postura": "Elegancia",
-    Desenvolvimiento: "Desenvoltura",
-    "Oratoria y Entrevista": "Personalidad",
-    "Presencia Escénica": "Personalidad",
-  };
+  const fixedLabels = [
+    "Exposición oral",
+    "Actitud pasarela",
+    "Compromiso escolar",
+    "Compañerismo",
+    "Debate",
+    "Notas",
+  ];
   const myVotes = useQuery<VoteRow[]>({
     queryKey: ["juror-votes", code],
     queryFn: async () => await getJurorVotes(code),
@@ -190,36 +187,40 @@ function VotingPanel({
                   {c.locality && <div className="text-xs text-muted-foreground">{c.locality}</div>}
                 </div>
                 <div className="space-y-4">
-                  {categories.data?.map((cat) => {
-                    const key = `${c.id}:${cat.id}`;
-                    const current = voteMap.get(key);
-                    return (
-                      <div key={cat.id}>
-                        <div className="mb-2 flex items-center justify-between">
-                          <span className="text-sm font-medium">
-                            {categoryNameMap[cat.name] ?? cat.name}
-                          </span>
-                          <span className="text-sm text-gold">{current ?? "—"}/10</span>
+                  {(() => {
+                    const visible = (categories.data ?? []).map((cat, i) => ({
+                      ...cat,
+                      displayName: fixedLabels[i] ?? cat.name,
+                    }));
+                    return visible.map((cat) => {
+                      const key = `${c.id}:${cat.id}`;
+                      const current = voteMap.get(key);
+                      return (
+                        <div key={cat.id}>
+                          <div className="mb-2 flex items-center justify-between">
+                            <span className="text-sm font-medium">{cat.displayName}</span>
+                            <span className="text-sm text-gold">{current ?? "—"}/10</span>
+                          </div>
+                          <div className="grid grid-cols-10 gap-1">
+                            {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+                              <button
+                                key={n}
+                                type="button"
+                                onClick={() => setScore(c.id, cat.id, n)}
+                                className={`aspect-square rounded-md text-xs font-semibold transition ${
+                                  current === n
+                                    ? "bg-gradient-gold text-gold-foreground shadow-gold"
+                                    : "bg-muted text-muted-foreground hover:bg-gold/20 hover:text-gold"
+                                }`}
+                              >
+                                {n}
+                              </button>
+                            ))}
+                          </div>
                         </div>
-                        <div className="grid grid-cols-10 gap-1">
-                          {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
-                            <button
-                              key={n}
-                              type="button"
-                              onClick={() => setScore(c.id, cat.id, n)}
-                              className={`aspect-square rounded-md text-xs font-semibold transition ${
-                                current === n
-                                  ? "bg-gradient-gold text-gold-foreground shadow-gold"
-                                  : "bg-muted text-muted-foreground hover:bg-gold/20 hover:text-gold"
-                              }`}
-                            >
-                              {n}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    });
+                  })()}
                 </div>
               </div>
             </div>

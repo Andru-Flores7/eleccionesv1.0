@@ -230,6 +230,76 @@ function CandidateProfileModal({
             <p className="text-sm leading-relaxed text-muted-foreground">{candidate.description}</p>
           )}
 
+          <div className="grid grid-cols-2 gap-3">
+            {(candidate as any).curso ? (
+              <div>
+                <div className="text-xs text-muted-foreground">Curso</div>
+                <div className="font-medium">{(candidate as any).curso}</div>
+              </div>
+            ) : null}
+            {(candidate as any).age ? (
+              <div>
+                <div className="text-xs text-muted-foreground">Edad</div>
+                <div className="font-medium">{(candidate as any).age}</div>
+              </div>
+            ) : null}
+            {(candidate as any).signo ? (
+              <div>
+                <div className="text-xs text-muted-foreground">Signo</div>
+                <div className="font-medium">{(candidate as any).signo}</div>
+              </div>
+            ) : null}
+            {(candidate as any).hobby ? (
+              <div>
+                <div className="text-xs text-muted-foreground">Hobby</div>
+                <div className="font-medium">{(candidate as any).hobby}</div>
+              </div>
+            ) : null}
+            {(candidate as any).color_preferido ? (
+              <div>
+                <div className="text-xs text-muted-foreground">Color</div>
+                <div className="font-medium">{(candidate as any).color_preferido}</div>
+              </div>
+            ) : null}
+            {(candidate as any).musica_favorita ? (
+              <div>
+                <div className="text-xs text-muted-foreground">Música</div>
+                <div className="font-medium">{(candidate as any).musica_favorita}</div>
+              </div>
+            ) : null}
+            {(candidate as any).persona_favorita ? (
+              <div>
+                <div className="text-xs text-muted-foreground">Mi persona favorita</div>
+                <div className="font-medium">{(candidate as any).persona_favorita}</div>
+              </div>
+            ) : null}
+            {(candidate as any).mejor_amigo ? (
+              <div>
+                <div className="text-xs text-muted-foreground">Mi mejor amigo/a</div>
+                <div className="font-medium">{(candidate as any).mejor_amigo}</div>
+              </div>
+            ) : null}
+            {(candidate as any).libro_preferido ? (
+              <div>
+                <div className="text-xs text-muted-foreground">Libro preferido</div>
+                <div className="font-medium">{(candidate as any).libro_preferido}</div>
+              </div>
+            ) : null}
+            {(candidate as any).meta_vida ? (
+              <div className="col-span-2">
+                <div className="text-xs text-muted-foreground">Meta en la vida</div>
+                <div className="font-medium">{(candidate as any).meta_vida}</div>
+              </div>
+            ) : null}
+          </div>
+
+          {(candidate as any).mensaje_juventud && (
+            <div className="mt-3">
+              <div className="text-xs text-muted-foreground">Mensaje para la juventud</div>
+              <div className="mt-1 text-sm">{(candidate as any).mensaje_juventud}</div>
+            </div>
+          )}
+
           {/* Galería */}
           {photos.length > 0 && (
             <div>
@@ -297,6 +367,17 @@ function CandidatesTab() {
     number: "",
     locality: "",
     description: "",
+    curso: "",
+    age: "",
+    signo: "",
+    hobby: "",
+    color_preferido: "",
+    musica_favorita: "",
+    persona_favorita: "",
+    mejor_amigo: "",
+    libro_preferido: "",
+    meta_vida: "",
+    mensaje_juventud: "",
     media: emptyMedia(),
   });
 
@@ -307,7 +388,18 @@ function CandidatesTab() {
       name: c.name,
       number: c.number != null ? String(c.number) : "",
       locality: c.locality ?? "",
-      description: c.description ?? "",
+      description: (c as any).description ?? "",
+      curso: (c as any).curso ?? "",
+      age: (c as any).age != null ? String((c as any).age) : "",
+      signo: (c as any).signo ?? "",
+      hobby: (c as any).hobby ?? "",
+      color_preferido: (c as any).color_preferido ?? "",
+      musica_favorita: (c as any).musica_favorita ?? "",
+      persona_favorita: (c as any).persona_favorita ?? "",
+      mejor_amigo: (c as any).mejor_amigo ?? "",
+      libro_preferido: (c as any).libro_preferido ?? "",
+      meta_vida: (c as any).meta_vida ?? "",
+      mensaje_juventud: (c as any).mensaje_juventud ?? "",
       media: mediaArr.length > 0 ? mediaArr : emptyMedia(),
     });
     // Scroll al panel del formulario en móvil
@@ -316,7 +408,24 @@ function CandidatesTab() {
 
   function cancelEdit() {
     setEditingId(null);
-    setForm({ name: "", number: "", locality: "", description: "", media: emptyMedia() });
+    setForm({
+      name: "",
+      number: "",
+      locality: "",
+      description: "",
+      curso: "",
+      age: "",
+      signo: "",
+      hobby: "",
+      color_preferido: "",
+      musica_favorita: "",
+      persona_favorita: "",
+      mejor_amigo: "",
+      libro_preferido: "",
+      meta_vida: "",
+      mensaje_juventud: "",
+      media: emptyMedia(),
+    });
   }
 
   function updateItem(idx: number, patch: Partial<MediaItem>) {
@@ -354,6 +463,17 @@ function CandidatesTab() {
           number: form.number ? Number(form.number) : null,
           locality: form.locality.trim() || null,
           description: form.description.trim() || null,
+          curso: form.curso.trim() || null,
+          age: form.age ? Number(form.age) : null,
+          signo: form.signo.trim() || null,
+          hobby: form.hobby.trim() || null,
+          color_preferido: form.color_preferido.trim() || null,
+          musica_favorita: form.musica_favorita.trim() || null,
+          persona_favorita: form.persona_favorita.trim() || null,
+          mejor_amigo: form.mejor_amigo.trim() || null,
+          libro_preferido: form.libro_preferido.trim() || null,
+          meta_vida: form.meta_vida.trim() || null,
+          mensaje_juventud: form.mensaje_juventud.trim() || null,
           photo_url: firstPhoto,
           media,
         })
@@ -368,6 +488,17 @@ function CandidatesTab() {
         number: form.number ? Number(form.number) : null,
         locality: form.locality.trim() || null,
         description: form.description.trim() || null,
+        curso: form.curso.trim() || null,
+        age: form.age ? Number(form.age) : null,
+        signo: form.signo.trim() || null,
+        hobby: form.hobby.trim() || null,
+        color_preferido: form.color_preferido.trim() || null,
+        musica_favorita: form.musica_favorita.trim() || null,
+        persona_favorita: form.persona_favorita.trim() || null,
+        mejor_amigo: form.mejor_amigo.trim() || null,
+        libro_preferido: form.libro_preferido.trim() || null,
+        meta_vida: form.meta_vida.trim() || null,
+        mensaje_juventud: form.mensaje_juventud.trim() || null,
         photo_url: firstPhoto,
         media,
       });
@@ -375,7 +506,24 @@ function CandidatesTab() {
       toast.success(
         `Candidata agregada (${photoCount} fotos, ${media.length - photoCount} videos)`,
       );
-      setForm({ name: "", number: "", locality: "", description: "", media: emptyMedia() });
+      setForm({
+        name: "",
+        number: "",
+        locality: "",
+        description: "",
+        curso: "",
+        age: "",
+        signo: "",
+        hobby: "",
+        color_preferido: "",
+        musica_favorita: "",
+        persona_favorita: "",
+        mejor_amigo: "",
+        libro_preferido: "",
+        meta_vida: "",
+        mensaje_juventud: "",
+        media: emptyMedia(),
+      });
     }
     qc.invalidateQueries({ queryKey: ["candidates"] });
     qc.invalidateQueries({ queryKey: ["rankings"] });
@@ -515,7 +663,7 @@ function CandidatesTab() {
           )}
 
           <input
-            placeholder="Nombre completo"
+            placeholder="NOMBRE Y APELLIDO"
             required
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -524,22 +672,85 @@ function CandidatesTab() {
           <div className="grid grid-cols-2 gap-2">
             <input
               type="number"
-              placeholder="Número"
+              placeholder="CANDIDATA N°"
               value={form.number}
               onChange={(e) => setForm({ ...form, number: e.target.value })}
               className="rounded-lg border bg-background px-3 py-2 text-sm"
             />
             <input
-              placeholder="Localidad"
-              value={form.locality}
-              onChange={(e) => setForm({ ...form, locality: e.target.value })}
+              placeholder="CURSO AL QUE REPRESENTA"
+              value={form.curso}
+              onChange={(e) => setForm({ ...form, curso: e.target.value })}
               className="rounded-lg border bg-background px-3 py-2 text-sm"
             />
           </div>
+          <div className="grid grid-cols-2 gap-2">
+            <input
+              type="number"
+              placeholder="EDAD"
+              value={form.age}
+              onChange={(e) => setForm({ ...form, age: e.target.value })}
+              className="rounded-lg border bg-background px-3 py-2 text-sm"
+            />
+            <input
+              placeholder="SIGNO"
+              value={form.signo}
+              onChange={(e) => setForm({ ...form, signo: e.target.value })}
+              className="rounded-lg border bg-background px-3 py-2 text-sm"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <input
+              placeholder="HOBBY"
+              value={form.hobby}
+              onChange={(e) => setForm({ ...form, hobby: e.target.value })}
+              className="rounded-lg border bg-background px-3 py-2 text-sm"
+            />
+            <input
+              placeholder="COLOR PREFERIDO"
+              value={form.color_preferido}
+              onChange={(e) => setForm({ ...form, color_preferido: e.target.value })}
+              className="rounded-lg border bg-background px-3 py-2 text-sm"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <input
+              placeholder="MÚSICA FAVORITA"
+              value={form.musica_favorita}
+              onChange={(e) => setForm({ ...form, musica_favorita: e.target.value })}
+              className="rounded-lg border bg-background px-3 py-2 text-sm"
+            />
+            <input
+              placeholder="MI PERSONA FAVORITA"
+              value={form.persona_favorita}
+              onChange={(e) => setForm({ ...form, persona_favorita: e.target.value })}
+              className="rounded-lg border bg-background px-3 py-2 text-sm"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <input
+              placeholder="MI MEJOR AMIGO/A"
+              value={form.mejor_amigo}
+              onChange={(e) => setForm({ ...form, mejor_amigo: e.target.value })}
+              className="rounded-lg border bg-background px-3 py-2 text-sm"
+            />
+            <input
+              placeholder="LIBRO PREFERIDO"
+              value={form.libro_preferido}
+              onChange={(e) => setForm({ ...form, libro_preferido: e.target.value })}
+              className="rounded-lg border bg-background px-3 py-2 text-sm"
+            />
+          </div>
+          <input
+            placeholder="META EN LA VIDA"
+            value={form.meta_vida}
+            onChange={(e) => setForm({ ...form, meta_vida: e.target.value })}
+            className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
+          />
           <textarea
-            placeholder="Descripción breve"
-            value={form.description}
-            onChange={(e) => setForm({ ...form, description: e.target.value })}
+            placeholder="MENSAJE PARA LA JUVENTUD"
+            value={form.mensaje_juventud}
+            onChange={(e) => setForm({ ...form, mensaje_juventud: e.target.value })}
             className="h-24 w-full rounded-lg border bg-background px-3 py-2 text-sm"
           />
           <div className="pt-2">
@@ -741,7 +952,18 @@ function LiveVotesTab() {
     };
   }, [qc]);
 
-  const cats = categories.data ?? [];
+  const fixedLabels = [
+    "Exposición oral",
+    "Actitud pasarela",
+    "Compromiso escolar",
+    "Compañerismo",
+    "Debate",
+    "Notas",
+  ];
+  const cats = (categories.data ?? []).map((cat, i) => ({
+    ...cat,
+    displayName: fixedLabels[i] ?? cat.name,
+  }));
   const cands = candidates.data ?? [];
   const jur = jurors.data ?? [];
   const map = new Map<string, number>();
@@ -949,7 +1171,7 @@ function LiveVotesTab() {
                       <th className="px-4 py-2">Jurado</th>
                       {cats.map((cat) => (
                         <th key={cat.id} className="px-3 py-2 text-center">
-                          {cat.name}
+                          {cat.displayName}
                         </th>
                       ))}
                       <th className="px-4 py-2 text-right">Subtotal</th>

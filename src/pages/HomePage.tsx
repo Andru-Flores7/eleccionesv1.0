@@ -78,7 +78,8 @@ export default function HomePage() {
               Edición 2026 · Jujuy, Argentina
             </div>
             <h1 className="font-display text-5xl font-bold leading-tight sm:text-7xl">
-              Elección <span className="text-gradient-gold">Reina </span>
+              Elección{" "}
+              <span className="text-gradient-gold">Representante - Embajadora y chico 10 </span>
               Colegio Polimodal N°8
               <span className="text-gradient-gold"> "Juana Azurduy"</span>
             </h1>
