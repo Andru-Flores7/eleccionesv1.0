@@ -83,7 +83,7 @@ export default function HomePage() {
             </div>
             <h1 className="font-display text-5xl font-bold leading-tight sm:text-7xl">
               Elección{" "}
-              <span className="text-gradient-gold">Representante - Embajadora y chico 10 </span>
+              <span className="text-gradient-gold">Representante - Embajadora y Chico 10 </span>
               Colegio Polimodal N°8
               <span className="text-gradient-gold"> "Juana Azurduy"</span>
             </h1>
@@ -105,7 +105,7 @@ export default function HomePage() {
           </div>
           <div className="flex gap-2">
             {([
-              { value: "reina", label: "Reina" },
+              { value: "reina", label: "Embajadora" },
               { value: "chico10", label: "Chico 10" },
             ] as const).map((item) => (
               <button

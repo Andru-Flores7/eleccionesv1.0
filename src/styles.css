@@ -51,12 +51,12 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --gradient-jujuy: linear-gradient(
+ --gradient-jujuy: linear-gradient(
     135deg,
-    oklch(0.82 0.15 85) 0%,
-    oklch(0.68 0.14 75) 50%,
-    oklch(0.35 0.05 70) 100%
-  );
+    oklch(0.32 0.09 250) 0%,
+    oklch(0.60 0.12 240) 50%,
+    oklch(0.85 0.08 220) 100%
+);
   --gradient-gold: linear-gradient(
     135deg,
     oklch(0.86 0.14 92) 0%,
@@ -74,38 +74,39 @@
   --background: oklch(0.14 0.005 60);
   --foreground: oklch(0.96 0.02 85);
   --card: oklch(0.18 0.008 60);
-  --card-foreground: oklch(0.96 0.02 85);
+  --card-foreground: oklch(45.294% 0.20405 277.387);
   --popover: oklch(0.16 0.008 60);
   --popover-foreground: oklch(0.96 0.02 85);
-  --primary: oklch(0.82 0.15 85);
+  --primary:   #318CE7 ; 
+;
   --primary-foreground: oklch(0.14 0.005 60);
   --secondary: oklch(0.24 0.01 60);
   --secondary-foreground: oklch(0.96 0.02 85);
   --muted: oklch(0.22 0.008 60);
   --muted-foreground: oklch(0.68 0.02 80);
-  --accent: oklch(0.72 0.15 80);
+  --accent: oklch(63.055% 0.11427 288.629);
   --accent-foreground: oklch(0.14 0.005 60);
   --destructive: oklch(0.62 0.22 27);
   --destructive-foreground: oklch(0.98 0.01 80);
   --border: oklch(0.78 0.15 85 / 0.18);
   --input: oklch(0.78 0.15 85 / 0.14);
-  --ring: oklch(0.82 0.15 85);
-  --gold: oklch(0.84 0.15 88);
+  --ring: oklch(62.569% 0.18355 269.933);
+  --gold: oklch(66.854% 0.08707 283.031);
   --gold-foreground: oklch(0.14 0.005 60);
   --gold-soft: oklch(0.78 0.15 85 / 0.12);
-  --chart-1: oklch(0.84 0.15 88);
+  --chart-1: oklch(51.477% 0.08083 272.98);
   --chart-2: oklch(0.7 0.13 75);
   --chart-3: oklch(0.55 0.12 70);
   --chart-4: oklch(0.4 0.08 65);
   --chart-5: oklch(0.28 0.04 60);
   --sidebar: oklch(0.16 0.008 60);
   --sidebar-foreground: oklch(0.96 0.02 85);
-  --sidebar-primary: oklch(0.82 0.15 85);
+  --sidebar-primary: oklch(47.921% 0.24343 269.349);
   --sidebar-primary-foreground: oklch(0.14 0.005 60);
   --sidebar-accent: oklch(0.24 0.01 60);
   --sidebar-accent-foreground: oklch(0.96 0.02 85);
   --sidebar-border: oklch(0.78 0.15 85 / 0.18);
-  --sidebar-ring: oklch(0.82 0.15 85);
+  --sidebar-ring: oklch(27.845% 0.00731 285.86);
 }
 
 @layer base {
@@ -149,4 +150,10 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+.text-gradient-gold {
+    color: #318CE7 !important; ; 
+
+  
 }
