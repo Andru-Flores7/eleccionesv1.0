@@ -9,6 +9,7 @@ import { MediaGallery, type MediaItem } from "@/components/media-gallery";
 import heroImg from "@/assets/jujuy-hero.jpg";
 import geekStoreLogo from "@/assets/GEEK STORE LOGO-bB5kTN19.png";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { formatImageUrl } from "@/lib/utils";
 
 type Candidate = Database["public"]["Tables"]["candidates"]["Row"];
 type RankingRow = Database["public"]["Views"]["candidate_rankings"]["Row"];
@@ -148,7 +149,7 @@ export default function HomePage() {
                       <div className="flex items-center gap-3">
                         {r.photo_url ? (
                           <img
-                            src={r.photo_url}
+                            src={formatImageUrl(r.photo_url)}
                             alt={r.name}
                             className="h-10 w-10 rounded-full object-cover"
                           />
@@ -189,7 +190,7 @@ export default function HomePage() {
                 key={c.id}
                 className="group overflow-hidden rounded-2xl border bg-card shadow-soft transition hover:shadow-gold"
               >
-                <div className="mx-auto h-[300px] w-full max-w-[300px] overflow-hidden rounded-t-2xl bg-black sm:rounded-tr-2xl sm:rounded-t-none">
+                <div className="mx-auto h-[400px] w-full max-w-[400px] overflow-hidden rounded-t-2xl bg-black sm:rounded-tr-2xl sm:rounded-t-none">
                   <div className="h-full w-full">
                     <MediaGallery
                       media={(c.media as MediaItem[]) ?? []}

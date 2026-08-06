@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
+import { formatImageUrl } from "@/lib/utils";
 
 export type MediaItem = { type: "photo" | "video"; url: string };
 
@@ -68,7 +69,7 @@ export function MediaGallery({
   return (
     <div className="relative h-full w-full bg-black">
       {current.type === "photo" ? (
-        <img src={current.url} alt={alt} className="h-full w-full object-contain" />
+        <img src={formatImageUrl(current.url)} alt={alt} className="h-full w-full object-contain" />
       ) : isDirectVideo(current.url) ? (
         <video src={current.url} controls playsInline className="h-full w-full object-contain" />
       ) : (

@@ -199,9 +199,9 @@ function VotingPanel({
         </div>
         {candidates.data?.map((c) => (
           <article key={c.id} className="overflow-hidden rounded-2xl border bg-card shadow-soft">
-            <div className="grid gap-4 sm:grid-cols-[300px_1fr] sm:items-center">
-              <div className="mx-auto h-[300px] w-full max-w-[300px] sm:mx-0 sm:h-[300px] sm:w-[300px]">
-                <div className="h-full w-full overflow-hidden rounded-2xl bg-black ">
+            <div className="grid gap-6 md:grid-cols-[400px_1fr] md:items-center">
+              <div className="mx-auto h-[400px] w-full max-w-[400px] md:mx-0 md:h-[400px] md:w-[400px]">
+                <div className="h-full w-full overflow-hidden rounded-2xl bg-black">
                   <MediaGallery
                     media={(c.media as MediaItem[]) ?? []}
                     fallbackPhoto={c.photo_url}
@@ -212,7 +212,7 @@ function VotingPanel({
               <div className="p-4 sm:p-6">
                 <div className="mb-4">
                   {c.number && <div className="text-xs font-semibold text-gold">Nº {c.number}</div>}
-                  <div className="font-display text-2xl">{c.name}</div>
+                  <div className="font-display text-2xl sm:text-3xl">{c.name}</div>
                   {c.locality && <div className="text-xs text-muted-foreground">{c.locality}</div>}
                 </div>
                 <div className="space-y-4">
@@ -226,19 +226,19 @@ function VotingPanel({
                       const current = voteMap.get(key);
                       return (
                         <div key={cat.id}>
-                          <div className="mb-2 flex items-center justify-between">
+                          <div className="mb-1.5 flex items-center justify-between">
                             <span className="text-sm font-medium">{cat.displayName}</span>
-                            <span className="text-sm text-gold">{current ?? "—"}/10</span>
+                            <span className="text-sm font-bold text-gold">{current ?? "—"}/10</span>
                           </div>
-                          <div className="grid grid-cols-10 gap-1">
+                          <div className="flex flex-wrap gap-1.5 max-w-md">
                             {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
                               <button
                                 key={n}
                                 type="button"
                                 onClick={() => setScore(c.id, cat.id, n)}
-                                className={`aspect-square rounded-md text-xs font-semibold transition ${
+                                className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg text-sm sm:text-base font-bold transition-all ${
                                   current === n
-                                    ? "bg-primary text-gold-foreground shadow-gold"
+                                    ? "bg-primary text-gold-foreground shadow-gold scale-105 ring-2 ring-gold"
                                     : "bg-muted text-muted-foreground hover:bg-gold/20 hover:text-gold"
                                 }`}
                               >

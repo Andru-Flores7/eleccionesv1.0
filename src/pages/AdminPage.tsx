@@ -23,6 +23,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { fetchCandidates, fetchCategories, fetchRankings } from "@/lib/public-data";
 import type { MediaItem } from "@/components/media-gallery";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { formatImageUrl } from "@/lib/utils";
 
 type Contest = "Embajadora" | "chico10";
 type Tab = "ranking" | "votos" | "candidatas" | "jurados";
@@ -242,7 +243,7 @@ function CandidateProfileModal({
           {/* Foto principal */}
           {candidate.photo_url ? (
             <img
-              src={candidate.photo_url}
+              src={formatImageUrl(candidate.photo_url)}
               alt={candidate.name}
               className="h-48 w-full rounded-xl object-cover"
             />
@@ -344,7 +345,7 @@ function CandidateProfileModal({
                 {photos.map((p, i) => (
                   <a key={i} href={p.url} target="_blank" rel="noopener noreferrer">
                     <img
-                      src={p.url}
+                      src={formatImageUrl(p.url)}
                       alt={`foto ${i + 1}`}
                       className="h-24 w-full rounded-lg object-cover transition hover:opacity-80"
                     />
@@ -624,7 +625,7 @@ function CandidatesTab({ contest }: { contest: Contest }) {
                 >
                   {c.photo_url ? (
                     <img
-                      src={c.photo_url}
+                      src={formatImageUrl(c.photo_url)}
                       alt={c.name}
                       className="h-12 w-12 rounded-lg object-cover"
                     />
@@ -845,7 +846,7 @@ function CandidatesTab({ contest }: { contest: Contest }) {
                   </select>
                   <input
                     placeholder={
-                      m.type === "photo" ? "https://…/foto.jpg" : "YouTube / Vimeo / .mp4"
+                      m.type === "photo" ? "URL o enlace de Google Drive de la foto" : "YouTube / Vimeo / Google Drive / .mp4"
                     }
                     value={m.url}
                     onChange={(e) => updateItem(idx, { url: e.target.value })}
