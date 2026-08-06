@@ -24,7 +24,7 @@ import { fetchCandidates, fetchCategories, fetchRankings } from "@/lib/public-da
 import type { MediaItem } from "@/components/media-gallery";
 import { usePageTitle } from "@/hooks/use-page-title";
 
-type Contest = "reina" | "chico10";
+type Contest = "Embajadora" | "chico10";
 type Tab = "ranking" | "votos" | "candidatas" | "jurados";
 type Candidate = Database["public"]["Tables"]["candidates"]["Row"];
 type Category = Database["public"]["Tables"]["categories"]["Row"];
@@ -33,10 +33,10 @@ type Vote = Database["public"]["Tables"]["votes"]["Row"];
 type RankingRow = Database["public"]["Views"]["candidate_rankings"]["Row"];
 
 export default function AdminPage() {
-  usePageTitle("Admin — Reina de Jujuy");
+  usePageTitle("Admin — Embajadora de Jujuy");
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("ranking");
-  const [contest, setContest] = useState<Contest>("reina");
+  const [contest, setContest] = useState<Contest>("Embajadora");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -108,7 +108,7 @@ export default function AdminPage() {
         {(tab === "ranking" || tab === "votos" || tab === "candidatas") && (
           <div className="mb-6 flex flex-wrap items-center gap-3">
             {([
-              { value: "reina", label: "Reina" },
+              { value: "Embajadora", label: "Embajadora" },
               { value: "chico10", label: "Chico 10" },
             ] as const).map((item) => (
               <button
@@ -156,7 +156,7 @@ function RankingTab({ contest }: { contest: Contest }) {
   }, [qc]);
 
   const visibleRankings = rankings.data?.filter((r) => {
-    const rowContest = (r as any).contest ?? "reina";
+    const rowContest = (r as any).contest ?? "Embajadora";
     return rowContest === contest;
   });
 
@@ -165,7 +165,7 @@ function RankingTab({ contest }: { contest: Contest }) {
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="text-xs text-muted-foreground">Concurso</div>
-          <div className="font-display text-2xl capitalize">{contest === "reina" ? "Reina" : "Chico 10"}</div>
+          <div className="font-display text-2xl capitalize">{contest === "Embajadora" ? "Embajadora" : "Chico 10"}</div>
         </div>
       </div>
       <h2 className="mb-4 font-display text-2xl">Ranking en vivo</h2>
@@ -588,7 +588,7 @@ function CandidatesTab({ contest }: { contest: Contest }) {
   }
 
   const visibleCandidates = candidates.data?.filter((c) => {
-    const candidateContest = (c as any).contest ?? "reina";
+    const candidateContest = (c as any).contest ?? "Embajadora";
     return candidateContest === contest;
   });
 
@@ -1038,7 +1038,7 @@ function LiveVotesTab({ contest }: { contest: Contest }) {
     displayName: fixedLabels[i] ?? cat.name,
   }));
   const cands = (candidates.data ?? []).filter((c) => {
-    const candidateContest = (c as any).contest ?? "reina";
+    const candidateContest = (c as any).contest ?? "Embajadora";
     return candidateContest === contest;
   });
   const jur = jurors.data ?? [];
@@ -1072,7 +1072,7 @@ function LiveVotesTab({ contest }: { contest: Contest }) {
     doc.setFontSize(24);
     doc.text("Comprobante Oficial de Votación", margin + 15, 20);
 
-    const contestLabel = contest === "reina" ? "Reina" : "Chico 10";
+    const contestLabel = contest === "Embajadora" ? "Embajadora" : "Chico 10";
 
     doc.setFontSize(11);
     doc.setTextColor(212, 175, 55);
@@ -1202,7 +1202,7 @@ function LiveVotesTab({ contest }: { contest: Contest }) {
         <div>
           <div className="text-xs text-muted-foreground">Concurso</div>
           <div className="font-display text-2xl capitalize">
-            {contest === "reina" ? "Reina" : "Chico 10"}
+            {contest === "Embajadora" ? "Embajadora" : "Chico 10"}
           </div>
           <p className="text-sm text-muted-foreground">
             Puntajes de cada jurado, actualizados en tiempo real.

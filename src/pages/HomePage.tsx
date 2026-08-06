@@ -14,9 +14,9 @@ type Candidate = Database["public"]["Tables"]["candidates"]["Row"];
 type RankingRow = Database["public"]["Views"]["candidate_rankings"]["Row"];
 
 export default function HomePage() {
-  usePageTitle("Elección Reina de Jujuy — Votación oficial");
+  usePageTitle("Elección Embajadora de Jujuy — Votación oficial");
   const qc = useQueryClient();
-  const [contest, setContest] = useState<"reina" | "chico10">("reina");
+  const [contest, setContest] = useState<"Embajadora" | "chico10">("Embajadora");
   const candidates = useQuery<Candidate[]>({
     queryKey: ["candidates", contest],
     queryFn: () => fetchCandidates(contest),
@@ -105,7 +105,7 @@ export default function HomePage() {
           </div>
           <div className="flex gap-2">
             {([
-              { value: "reina", label: "Embajadora" },
+              { value: "Embajadora", label: "Embajadora" },
               { value: "chico10", label: "Chico 10" },
             ] as const).map((item) => (
               <button

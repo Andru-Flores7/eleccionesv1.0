@@ -6,7 +6,7 @@ import { Crown } from "lucide-react";
 import { usePageTitle } from "@/hooks/use-page-title";
 
 export default function AuthPage() {
-  usePageTitle("Admin — Reina de Jujuy");
+  usePageTitle("Admin — Embajadora de Jujuy");
   const navigate = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");

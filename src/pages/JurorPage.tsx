@@ -14,7 +14,7 @@ type Category = Database["public"]["Tables"]["categories"]["Row"];
 type VoteRow = { candidate_id: string; category_id: string; score: number };
 
 export default function JurorPage() {
-  usePageTitle("Jurado — Votación Reina de Jujuy");
+  usePageTitle("Jurado — Votación Embajadora de Jujuy");
   const [code, setCode] = useState<string | null>(null);
   const [juror, setJuror] = useState<{ id: string; name: string } | null>(null);
 
@@ -109,7 +109,7 @@ function VotingPanel({
   onLogout: () => void;
 }) {
   const qc = useQueryClient();
-  const [contest, setContest] = useState<"reina" | "chico10">("reina");
+  const [contest, setContest] = useState<"Embajadora" | "chico10">("Embajadora");
   const candidates = useQuery<Candidate[]>({
     queryKey: ["candidates", contest],
     queryFn: () => fetchCandidates(contest),
@@ -175,11 +175,11 @@ function VotingPanel({
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="text-xs text-muted-foreground">Concurso</div>
-            <div className="font-display text-2xl capitalize">{contest === "reina" ? "Reina" : "Chico 10"}</div>
+            <div className="font-display text-2xl capitalize">{contest === "Embajadora" ? "Embajadora" : "Chico 10"}</div>
           </div>
           <div className="flex gap-2">
             {([
-              { value: "reina", label: "Reina" },
+              { value: "Embajadora", label: "Embajadora" },
               { value: "chico10", label: "Chico 10" },
             ] as const).map((item) => (
               <button
