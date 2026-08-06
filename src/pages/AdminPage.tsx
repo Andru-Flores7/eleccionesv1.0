@@ -885,7 +885,7 @@ function CandidatesTab({ contest }: { contest: Contest }) {
               <Pencil className="h-4 w-4" /> Guardar cambios
             </button>
           ) : (
-            <button className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-gradient-gold py-2.5 text-sm font-semibold text-gold-foreground shadow-gold">
+            <button className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary py-2.5 text-sm font-semibold text-gold-foreground shadow-gold">
               <Plus className="h-4 w-4" /> Agregar candidata
             </button>
           )}

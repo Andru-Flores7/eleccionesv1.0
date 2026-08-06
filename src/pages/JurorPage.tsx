@@ -238,7 +238,7 @@ function VotingPanel({
                                 onClick={() => setScore(c.id, cat.id, n)}
                                 className={`aspect-square rounded-md text-xs font-semibold transition ${
                                   current === n
-                                    ? "bg-gradient-gold text-gold-foreground shadow-gold"
+                                    ? "bg-primary text-gold-foreground shadow-gold"
                                     : "bg-muted text-muted-foreground hover:bg-gold/20 hover:text-gold"
                                 }`}
                               >
