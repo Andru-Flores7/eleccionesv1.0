@@ -212,7 +212,7 @@ function VotingPanel({
               <div className="p-4 sm:p-6">
                 <div className="mb-4">
                   {c.number && <div className="text-xs font-semibold text-gold">Nº {c.number}</div>}
-                  <div className="font-display text-2xl sm:text-3xl">{c.name}</div>
+                  <div className="font-display text-2xl sm:text-3xl font-bold text-gradient-gold">{c.name}</div>
                   {c.locality && <div className="text-xs text-muted-foreground">{c.locality}</div>}
                 </div>
                 <div className="space-y-4">
@@ -227,8 +227,8 @@ function VotingPanel({
                       return (
                         <div key={cat.id}>
                           <div className="mb-1.5 flex items-center justify-between">
-                            <span className="text-sm font-medium">{cat.displayName}</span>
-                            <span className="text-sm font-bold text-gold">{current ?? "—"}/10</span>
+                            <span className="text-base sm:text-lg font-bold">{cat.displayName}</span>
+                            <span className="text-base sm:text-lg font-bold text-gold">{current ?? "—"}/10</span>
                           </div>
                           <div className="flex flex-wrap gap-1.5 max-w-md">
                             {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
