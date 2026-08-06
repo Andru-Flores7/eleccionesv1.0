@@ -7,6 +7,7 @@ import { fetchCandidates, fetchCategories } from "@/lib/public-data";
 import type { Database } from "@/integrations/supabase/types";
 import { verifyJurorCode, getJurorVotes, castVote } from "@/lib/voting";
 import { MediaGallery, type MediaItem } from "@/components/media-gallery";
+import { CandidateDetails } from "@/components/candidate-details";
 import { usePageTitle } from "@/hooks/use-page-title";
 
 type Candidate = Database["public"]["Tables"]["candidates"]["Row"];
@@ -214,6 +215,7 @@ function VotingPanel({
                   {c.number && <div className="text-xs font-semibold text-gold">Nº {c.number}</div>}
                   <div className="font-display text-2xl sm:text-3xl font-bold text-gradient-gold">{c.name}</div>
                   {c.locality && <div className="text-xs text-muted-foreground">{c.locality}</div>}
+                  <CandidateDetails candidate={c} />
                 </div>
                 <div className="space-y-4">
                   {(() => {

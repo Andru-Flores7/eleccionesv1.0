@@ -10,6 +10,7 @@ import heroImg from "@/assets/jujuy-hero.jpg";
 import geekStoreLogo from "@/assets/GEEK STORE LOGO-bB5kTN19.png";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { formatImageUrl } from "@/lib/utils";
+import { CandidateDetails } from "@/components/candidate-details";
 
 type Candidate = Database["public"]["Tables"]["candidates"]["Row"];
 type RankingRow = Database["public"]["Views"]["candidate_rankings"]["Row"];
@@ -199,22 +200,27 @@ export default function HomePage() {
                     />
                   </div>
                 </div>
-                <div className="flex items-center justify-between p-4">
-                  <div>
-                    {c.number && (
-                      <div className="text-xs font-semibold text-gold">Nº {c.number}</div>
-                    )}
-                    <div className="font-display text-xl">{c.name}</div>
-                    {c.locality && (
-                      <div className="text-sm text-muted-foreground">{c.locality}</div>
-                    )}
-                    {c.description ? (
-                      <p className="mt-2 text-sm leading-6 text-muted-foreground line-clamp-3">
-                        {c.description}
-                      </p>
-                    ) : null}
+                <div className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      {c.number && (
+                        <div className="text-xs font-semibold text-gold">Nº {c.number}</div>
+                      )}
+                      <div className="font-display text-xl font-bold text-gradient-gold">{c.name}</div>
+                      {c.locality && (
+                        <div className="text-sm text-muted-foreground">{c.locality}</div>
+                      )}
+                    </div>
+                    <Crown className="h-5 w-5 text-gold/40 transition group-hover:text-gold flex-shrink-0" />
                   </div>
-                  <Crown className="h-5 w-5 text-gold/40 transition group-hover:text-gold" />
+
+                  {c.description ? (
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground line-clamp-3">
+                      {c.description}
+                    </p>
+                  ) : null}
+
+                  <CandidateDetails candidate={c} />
                 </div>
               </article>
             ))}

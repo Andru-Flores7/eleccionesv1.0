@@ -24,6 +24,7 @@ import { fetchCandidates, fetchCategories, fetchRankings } from "@/lib/public-da
 import type { MediaItem } from "@/components/media-gallery";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { formatImageUrl } from "@/lib/utils";
+import { CandidateDetails } from "@/components/candidate-details";
 
 type Contest = "Embajadora" | "chico10";
 type Tab = "ranking" | "votos" | "candidatas" | "jurados";
@@ -265,75 +266,7 @@ function CandidateProfileModal({
             <p className="text-sm leading-relaxed text-muted-foreground">{candidate.description}</p>
           )}
 
-          <div className="grid grid-cols-2 gap-3">
-            {(candidate as any).curso ? (
-              <div>
-                <div className="text-xs text-muted-foreground">Curso</div>
-                <div className="font-medium">{(candidate as any).curso}</div>
-              </div>
-            ) : null}
-            {(candidate as any).age ? (
-              <div>
-                <div className="text-xs text-muted-foreground">Edad</div>
-                <div className="font-medium">{(candidate as any).age}</div>
-              </div>
-            ) : null}
-            {(candidate as any).signo ? (
-              <div>
-                <div className="text-xs text-muted-foreground">Signo</div>
-                <div className="font-medium">{(candidate as any).signo}</div>
-              </div>
-            ) : null}
-            {(candidate as any).hobby ? (
-              <div>
-                <div className="text-xs text-muted-foreground">Hobby</div>
-                <div className="font-medium">{(candidate as any).hobby}</div>
-              </div>
-            ) : null}
-            {(candidate as any).color_preferido ? (
-              <div>
-                <div className="text-xs text-muted-foreground">Color</div>
-                <div className="font-medium">{(candidate as any).color_preferido}</div>
-              </div>
-            ) : null}
-            {(candidate as any).musica_favorita ? (
-              <div>
-                <div className="text-xs text-muted-foreground">Música</div>
-                <div className="font-medium">{(candidate as any).musica_favorita}</div>
-              </div>
-            ) : null}
-            {(candidate as any).persona_favorita ? (
-              <div>
-                <div className="text-xs text-muted-foreground">Mi persona favorita</div>
-                <div className="font-medium">{(candidate as any).persona_favorita}</div>
-              </div>
-            ) : null}
-            {(candidate as any).mejor_amigo ? (
-              <div>
-                <div className="text-xs text-muted-foreground">Mi mejor amigo/a</div>
-                <div className="font-medium">{(candidate as any).mejor_amigo}</div>
-              </div>
-            ) : null}
-            {(candidate as any).libro_preferido ? (
-              <div>
-                <div className="text-xs text-muted-foreground">Libro preferido</div>
-                <div className="font-medium">{(candidate as any).libro_preferido}</div>
-              </div>
-            ) : null}
-            {(candidate as any).meta_vida ? (
-              <div className="col-span-2">
-                <div className="text-xs text-muted-foreground">Meta en la vida</div>
-                <div className="font-medium">{(candidate as any).meta_vida}</div>
-              </div>
-            ) : null}
-          </div>
-
-          {(candidate as any).mensaje_juventud && (
-            <div className="mt-3">
-              <div className="text-xs text-muted-foreground">Mensaje para la juventud</div>
-              <div className="mt-1 text-sm">{(candidate as any).mensaje_juventud}</div>
-            </div>
-          )}
+          <CandidateDetails candidate={candidate} />
 
           {/* Galería */}
           {photos.length > 0 && (
