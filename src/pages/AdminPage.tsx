@@ -331,7 +331,7 @@ function CandidatesTab({ contest }: { contest: Contest }) {
   const emptyMedia = (): MediaItem[] => [
     { type: "photo", url: "" },
     { type: "photo", url: "" },
-    { type: "video", url: "" },
+    // { type: "video", url: "" },
   ];
   const [form, setForm] = useState({
     name: "",
@@ -760,7 +760,7 @@ function CandidatesTab({ contest }: { contest: Contest }) {
           <div className="pt-2">
             <div className="mb-2 flex items-center justify-between">
               <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Multimedia (mín. 3)
+                Multimedia (mín. 2)
               </label>
               <span className="text-[10px] text-muted-foreground">
                 {form.media.filter((m) => m.url.trim()).length} cargados
@@ -775,7 +775,7 @@ function CandidatesTab({ contest }: { contest: Contest }) {
                     className="rounded-lg border bg-background px-2 py-2 text-xs"
                   >
                     <option value="photo">Foto</option>
-                    <option value="video">Video</option>
+                    {/* <option value="video">Video</option> */}
                   </select>
                   <input
                     placeholder={
@@ -804,13 +804,13 @@ function CandidatesTab({ contest }: { contest: Contest }) {
               >
                 <ImageIcon className="h-3 w-3" /> Foto
               </button>
-              <button
+              {/* <button
                 type="button"
                 onClick={() => addItem("video")}
                 className="inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-xs hover:bg-muted"
               >
                 <Film className="h-3 w-3" /> Video
-              </button>
+              </button> */}
             </div>
           </div>
 
