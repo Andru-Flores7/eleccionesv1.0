@@ -190,7 +190,7 @@ export default function HomePage() {
                 key={c.id}
                 className="group overflow-hidden rounded-2xl border bg-card shadow-soft transition hover:shadow-gold"
               >
-                <div className="mx-auto h-[400px] w-full max-w-[400px] overflow-hidden rounded-t-2xl bg-black sm:rounded-tr-2xl sm:rounded-t-none">
+                <div className="mx-auto h-[600px] w-full max-w-[600px] overflow-hidden rounded-t-2xl bg-black sm:rounded-tr-2xl sm:rounded-t-none">
                   <div className="h-full w-full">
                     <MediaGallery
                       media={(c.media as MediaItem[]) ?? []}

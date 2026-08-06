@@ -199,8 +199,8 @@ function VotingPanel({
         </div>
         {candidates.data?.map((c) => (
           <article key={c.id} className="overflow-hidden rounded-2xl border bg-card shadow-soft">
-            <div className="grid gap-6 md:grid-cols-[400px_1fr] md:items-center">
-              <div className="mx-auto h-[400px] w-full max-w-[400px] md:mx-0 md:h-[400px] md:w-[400px]">
+            <div className="grid gap-6 lg:grid-cols-[600px_1fr] lg:items-center">
+              <div className="mx-auto h-[600px] w-full max-w-[600px] lg:mx-0 lg:h-[600px] lg:w-[600px]">
                 <div className="h-full w-full overflow-hidden rounded-2xl bg-black">
                   <MediaGallery
                     media={(c.media as MediaItem[]) ?? []}
