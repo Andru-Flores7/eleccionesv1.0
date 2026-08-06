@@ -425,8 +425,8 @@ function CandidatesTab({ contest }: { contest: Contest }) {
     if (!form.name.trim()) return;
     const media = form.media.filter((m) => m.url.trim().length > 0);
     const photoCount = media.filter((m) => m.type === "photo").length;
-    if (media.length < 3) {
-      toast.error("Cargá al menos 3 archivos multimedia (fotos o videos).");
+    if (media.length < 1) {
+      toast.error("Cargá al menos 1 archivo multimedia (foto o video).");
       return;
     }
     const firstPhoto = media.find((m) => m.type === "photo")?.url ?? null;
@@ -760,7 +760,7 @@ function CandidatesTab({ contest }: { contest: Contest }) {
           <div className="pt-2">
             <div className="mb-2 flex items-center justify-between">
               <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Multimedia (mín. 2)
+                Multimedia (mín. 1)
               </label>
               <span className="text-[10px] text-muted-foreground">
                 {form.media.filter((m) => m.url.trim()).length} cargados
