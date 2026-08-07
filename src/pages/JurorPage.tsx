@@ -212,7 +212,7 @@ function VotingPanel({
               </div>
               <div className="p-4 sm:p-6">
                 <div className="mb-4">
-                  {c.number && <div className="text-xs font-semibold text-gold">Nº {c.number}</div>}
+                  {c.number && <div className="text-xs font-semibold text-gold numero">Nº {c.number}</div>}
                   <div className="font-display text-2xl sm:text-3xl font-bold text-gradient-gold">{c.name}</div>
                   {c.locality && <div className="text-xs text-muted-foreground">{c.locality}</div>}
                   <CandidateDetails candidate={c} />
