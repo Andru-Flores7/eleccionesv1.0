@@ -27,7 +27,7 @@ export function CandidateDetails({ candidate }: { candidate: CandidateRow | any 
     <div className="mt-4 rounded-xl border border-border/80 bg-muted/40 p-4 space-y-3">
       <div className="flex items-center gap-2">
         <span className="h-2 w-2 rounded-full bg-gold"></span>
-        <h4 className="text-xs font-bold uppercase tracking-wider text-gold">Ficha de la Candidata</h4>
+        <h4 className="text-xs font-bold uppercase tracking-wider text-gold">Ficha de Candidato/a</h4>
       </div>
 
       {fields.length > 0 && (

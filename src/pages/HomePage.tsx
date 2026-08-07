@@ -90,7 +90,7 @@ export default function HomePage() {
               <span className="text-gradient-gold"> "Juana Azurduy"</span>
             </h1>
             <p className="mt-5 max-w-xl text-lg text-white/75">
-              Conocé a las candidatas, seguí las puntuaciones del jurado y viví la elección en
+              Conocé a los/as candidatos/as, seguí las puntuaciones del jurado y viví la elección en
               tiempo real.
             </p>
           </div>
@@ -134,7 +134,7 @@ export default function HomePage() {
               <thead className="bg-muted/60 text-left text-xs uppercase tracking-wider text-muted-foreground">
                 <tr>
                   <th className="px-4 py-3 w-12">#</th>
-                  <th className="px-4 py-3">Candidata</th>
+                  <th className="px-4 py-3">Candidato/a</th>
                   <th className="px-4 py-3 text-right">Puntaje</th>
                   <th className="px-4 py-3 text-right hidden sm:table-cell">Promedio</th>
                   <th className="px-4 py-3 text-right hidden sm:table-cell">Votos</th>
@@ -178,12 +178,12 @@ export default function HomePage() {
             </table>
           </div>
         ) : (
-          <p className="text-muted-foreground">Aún no hay candidatas cargadas.</p>
+          <p className="text-muted-foreground">Aún no hay candidatos/as cargadas.</p>
         )}
       </section>
 
       <section className="mx-auto max-w-7xl px-6 pb-24">
-        <h2 className="mb-8 font-display text-3xl sm:text-4xl">Candidatas</h2>
+        <h2 className="mb-8 font-display text-3xl sm:text-4xl">Candidatos/as</h2>
         {candidates.data && candidates.data.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {candidates.data.map((c) => (

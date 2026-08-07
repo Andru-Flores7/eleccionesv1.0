@@ -90,7 +90,7 @@ export default function AdminPage() {
         </div>
         <div className="mx-auto max-w-6xl px-4">
           <nav className="flex gap-1 border-b">
-            {(["ranking", "votos", "candidatas", "jurados"] as Tab[]).map((t) => (
+            {(["ranking", "votos", "candidatos/as", "jurados"] as Tab[]).map((t) => (
               <button
                 key={t}
                 onClick={() => setTab(t)}
@@ -176,7 +176,7 @@ function RankingTab({ contest }: { contest: Contest }) {
           <thead className="bg-muted/60 text-left text-xs uppercase text-muted-foreground">
             <tr>
               <th className="px-4 py-2">#</th>
-              <th className="px-4 py-2">Candidata</th>
+              <th className="px-4 py-2">Candidato/a</th>
               <th className="px-4 py-2 text-right">Total</th>
               <th className="px-4 py-2 text-right">Promedio</th>
               <th className="px-4 py-2 text-right">Votos</th>
@@ -623,7 +623,7 @@ function CandidatesTab({ contest }: { contest: Contest }) {
             })}
             {(!visibleCandidates || visibleCandidates.length === 0) && (
               <p className="text-sm text-muted-foreground">
-                Aún no hay candidatos cargados para este concurso.
+                Aún no hay candidatos/as cargados para este concurso.
               </p>
             )}
           </div>
@@ -638,7 +638,7 @@ function CandidatesTab({ contest }: { contest: Contest }) {
           {/* Header del panel */}
           <div className="flex items-center justify-between">
             <h3 className="font-display text-lg">
-              {editingId ? "Editar candidata" : "Agregar candidata"}
+              {editingId ? "Editar candidato/a" : "Agregar candidato/a"}
             </h3>
             {editingId && (
               <button
@@ -820,7 +820,7 @@ function CandidatesTab({ contest }: { contest: Contest }) {
             </button>
           ) : (
             <button className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary py-2.5 text-sm font-semibold text-gold-foreground shadow-gold">
-              <Plus className="h-4 w-4" /> Agregar candidata
+              <Plus className="h-4 w-4" /> Agregar candidato/a
             </button>
           )}
         </form>
@@ -1160,7 +1160,7 @@ function LiveVotesTab({ contest }: { contest: Contest }) {
       </div>
       {jur.length === 0 || cands.length === 0 ? (
         <p className="text-sm text-muted-foreground">
-          Necesitás al menos una candidata y un jurado.
+          Necesitás al menos un candidata/o y un jurado.
         </p>
       ) : (
         cands.map((c) => {
