@@ -90,7 +90,7 @@ export default function AdminPage() {
         </div>
         <div className="mx-auto max-w-6xl px-4">
           <nav className="flex gap-1 border-b">
-            {(["ranking", "votos", "candidatos/as", "jurados"] as Tab[]).map((t) => (
+            {(["ranking", "votos", "candidatas", "jurados"] as Tab[]).map((t) => (
               <button
                 key={t}
                 onClick={() => setTab(t)}
