@@ -1077,7 +1077,8 @@ function LiveVotesTab({ contest }: { contest: Contest }) {
       doc.text(String(idx + 1), xPos, y + 4);
       xPos += colWidths[0];
 
-      doc.text(cand.name.substring(0, 20), xPos, y + 4);
+      const candLabel = cand.number ? `Nº ${cand.number} · ${cand.name}` : cand.name;
+      doc.text(candLabel.substring(0, 20), xPos, y + 4);
       xPos += colWidths[1];
 
       doc.text(cand.number ? String(cand.number) : "—", xPos, y + 4);

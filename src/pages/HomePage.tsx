@@ -158,7 +158,10 @@ export default function HomePage() {
                           <div className="h-10 w-10 rounded-full bg-gradient-jujuy" />
                         )}
                         <div>
-                          <div className="font-medium">{r.name}</div>
+                          <div className="font-medium">
+                            {r.number ? `Nº ${r.number} · ` : ""}
+                            {r.name}
+                          </div>
                           {r.locality && (
                             <div className="text-xs text-muted-foreground">{r.locality}</div>
                           )}
