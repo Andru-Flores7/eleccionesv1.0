@@ -4,6 +4,7 @@ import HomePage from "./pages/HomePage";
 import JurorPage from "./pages/JurorPage";
 import AuthPage from "./pages/AuthPage";
 import AdminPage from "./pages/AdminPage";
+import TermsView from "./pages/TermsView";
 import NotFoundPage from "./pages/NotFoundPage";
 
 export default function App() {
@@ -14,6 +15,7 @@ export default function App() {
         <Route path="/jurado" element={<JurorPage />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/terminos" element={<TermsView />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Toaster richColors position="top-center" />

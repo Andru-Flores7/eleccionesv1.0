@@ -160,3 +160,63 @@
 .numero{
   font-size : 30px
 }
+
+.terms-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2.5rem;
+  background: #1f2833;
+  border: 1px solid #233554;
+  border-radius: 12px;
+  color: #e6f1ff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.terms-container h2 {
+  color: #c5a059;
+  font-size: 1.8rem;
+  margin-bottom: 0.2rem;
+  text-align: center;
+}
+
+.terms-container .last-updated {
+  text-align: center;
+  color: #8892b0;
+  font-size: 0.85rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #233554;
+  padding-bottom: 1rem;
+}
+
+.terms-container section {
+  margin-bottom: 1.8rem;
+}
+
+.terms-container h3 {
+  color: #66fcf1;
+  font-size: 1.15rem;
+  margin-bottom: 0.6rem;
+}
+
+.terms-container p {
+  color: #ccd6f6;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin-bottom: 0.8rem;
+}
+
+.terms-container strong {
+  color: #c5a059;
+}
+
+/* Responsivo para celulares */
+@media (max-width: 600px) {
+  .terms-container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .terms-container h2 {
+    font-size: 1.4rem;
+  }
+}
