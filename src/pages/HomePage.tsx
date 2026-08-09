@@ -250,6 +250,9 @@ export default function HomePage() {
             </a>
           </div>
           <span className="font-medium text-foreground">© 2026 GEEK STORE "Creative Tech Solutions"</span>
+          <p className="footer-disclaimer">
+      🔒 <strong>Compromiso de Privacidad:</strong> Geekstore se compromete a garantizar la protección de la imagen e integridad de los menores participantes, asegurando la eliminación definitiva de sus datos personales e imágenes de nuestras bases de datos al finalizar el evento.
+    </p>
         </div>
       </footer>
     </div>
