@@ -86,12 +86,12 @@
   --muted-foreground: oklch(0.68 0.02 80);
   --accent: oklch(63.055% 0.11427 288.629);
   --accent-foreground: oklch(0.14 0.005 60);
-  --destructive: oklch(0.62 0.22 27);
+  --destructive: oklch(58.073% 0.23032 28.795);
   --destructive-foreground: oklch(0.98 0.01 80);
   --border: oklch(0.78 0.15 85 / 0.18);
   --input: oklch(0.78 0.15 85 / 0.14);
   --ring: oklch(62.569% 0.18355 269.933);
-  --gold: oklch(66.854% 0.08707 283.031);
+  --gold: oklch(63.966% 0.14913 54.865);
   --gold-foreground: oklch(0.14 0.005 60);
   --gold-soft: oklch(0.78 0.15 85 / 0.12);
   --chart-1: oklch(51.477% 0.08083 272.98);
