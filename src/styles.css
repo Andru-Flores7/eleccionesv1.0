@@ -51,12 +51,12 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
- --gradient-jujuy: linear-gradient(
+--gradient-jujuy: linear-gradient(
     135deg,
-    oklch(0.32 0.09 250) 0%,
-    oklch(0.60 0.12 240) 50%,
-    oklch(0.85 0.08 220) 100%
-);
+    oklch(0.32 0.12 41) 0%,
+    oklch(0.65 0.198 41) 50%,
+    oklch(0.88 0.10 60) 100%
+  );
   --gradient-gold: linear-gradient(
     135deg,
     oklch(0.86 0.14 92) 0%,
@@ -77,7 +77,7 @@
   --card-foreground: oklch(45.294% 0.20405 277.387);
   --popover: oklch(0.16 0.008 60);
   --popover-foreground: oklch(0.96 0.02 85);
-  --primary:   #318CE7 ; 
+  --primary: #ED5803 
 ;
   --primary-foreground: oklch(0.14 0.005 60);
   --secondary: oklch(0.24 0.01 60);
@@ -153,7 +153,7 @@
 }
 
 .text-gradient-gold {
-    color: #318CE7 !important; ; 
+    color: #ED5803 !important; ; 
 
   
 }

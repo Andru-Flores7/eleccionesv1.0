@@ -85,9 +85,9 @@ export default function HomePage() {
             </div>
             <h1 className="font-display text-5xl font-bold leading-tight sm:text-7xl">
               Elección{" "}
-              <span className="text-gradient-gold">Representante - Embajadora y Chico 10 </span>
-              Colegio Polimodal N°8
-              <span className="text-gradient-gold"> "Juana Azurduy"</span>
+              <span className="text-gradient-gold"> Embajadora y Chico 10 </span>
+              Escuela Normal
+              <span className="text-gradient-gold"> "REPÚBLICA DE BOLIVIA"</span>
             </h1>
             <p className="mt-5 max-w-xl text-lg text-white/75">
               Conocé a los/as candidatos/as, seguí las puntuaciones del jurado y viví la elección en
